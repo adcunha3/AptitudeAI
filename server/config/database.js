@@ -1,10 +1,16 @@
-import mysql from 'mysql2';
+import mongoose from 'mongoose';
+import * as dotenv from 'dotenv';
 
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'AptitudeAI',
-    database: 'AptitudeAI'
-});
+dotenv.config();
 
-export default connection;
+const connectDB = async () => {
+    try {
+        await mongoose.connect(process.env.MONGODB_URI);
+        console.log('MongoDB connected successfully');
+    } catch (error) {
+        console.error('MongoDB connection error:', error);
+        process.exit(1);
+    }
+};
+
+export default connectDB;
