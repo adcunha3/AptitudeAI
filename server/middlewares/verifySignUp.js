@@ -19,5 +19,4 @@ const verifySignUp = {
     checkDuplicateUsernameOrEmail
 };
 
-// Export the verifySignUp object
 module.exports = verifySignUp;
