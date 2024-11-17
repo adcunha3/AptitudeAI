@@ -20,6 +20,16 @@ const UserSchema = mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Role"
         }
+    ],
+    interests: [
+        {
+            type: String,
+        }
+    ],
+    bio: [
+        {
+            type: String,
+        }
     ]
 }, { timestamps: true });
 

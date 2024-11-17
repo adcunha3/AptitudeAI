@@ -1,5 +1,6 @@
 const verifySignUp = require("../middlewares/verifySignUp.js");
 const controller = require("../controllers/auth.controller.js");
+const profileController = require("../controllers/profile.controller.js");
 
 module.exports = function(app) {
     app.use(function(req, res, next) {
@@ -15,4 +16,7 @@ module.exports = function(app) {
     app.post("/api/auth/signin", controller.signin);
 
     app.post("/api/auth/signout", controller.signout);
+
+    app.get("/api/profile/:id", profileController.getProfile); 
+    app.put("/api/profile/:id", profileController.updateProfile); 
 }
