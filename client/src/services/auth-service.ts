@@ -10,8 +10,12 @@ export class AuthService {
     signupUser(email: string, username: string, password: string, role: string) {
 
         const authData: AuthModel = {email: email, username: username, password: password, role: role}
-        this.http.post('http://localhost:3000/api/auth/signup', authData).subscribe(res => {
-            console.log(res);
-        })
+        this.http.post('http://localhost:3000/api/auth/signup', authData, {headers: { 'Content-Type': 'application/json'}})
+            .subscribe(res => {
+                console.log(res);
+            },
+            error => {
+              console.error('Error:', error);
+            });
     }
 }

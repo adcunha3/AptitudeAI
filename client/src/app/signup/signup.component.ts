@@ -29,7 +29,7 @@ export class SignupComponent {
   }
 
   onSubmit( ){
-    this.authService.signupUser(this.signupForm.value.email, this.signupForm.value.username, this.signupForm.value.password, this.signupForm.value.roles);
+    this.authService.signupUser(this.signupForm.value.email, this.signupForm.value.username, this.signupForm.value.password, this.signupForm.value.role);
   }
 
 }
