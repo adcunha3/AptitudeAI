@@ -24,6 +24,10 @@ export class SignupComponent {
     })
   }
 
+  setRole(role: string) {
+    this.signupForm.controls['role'].setValue(role);
+  }
+
   onSubmit( ){
     this.authService.signupUser(this.signupForm.value.email, this.signupForm.value.username, this.signupForm.value.password, this.signupForm.value.roles);
   }
