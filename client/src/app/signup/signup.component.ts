@@ -20,7 +20,7 @@ export class SignupComponent {
       'email': new FormControl('', [Validators.required]),
       'username': new FormControl('', [Validators.required]),
       'password': new FormControl('', [Validators.required]),
-      'roles': new FormControl('', [Validators.required])
+      'role': new FormControl('', [Validators.required])
     })
   }
 
