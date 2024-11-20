@@ -14,13 +14,11 @@
             <input class="form-control" formControlName="password" type="password" placeholder="Password">
         </div>
 
-        <!-- Role selection buttons -->
         <div class="role-buttons">
             <button type="button" class="role-button" (click)="setRole('student')">Student</button>
             <button type="button" class="role-button" (click)="setRole('mentor')">Mentor</button>
         </div>
 
-        <!-- Hidden input to submit the selected role -->
         <input type="hidden" formControlName="role">
 
         <button [disabled]="!signupForm.valid" type="submit" class="btn-submit">Sign Up</button>
