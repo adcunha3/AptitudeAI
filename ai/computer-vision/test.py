@@ -12,7 +12,7 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 
 # Initialize video
-cap = cv2.VideoCapture('low-eye.mp4')  # Replace with 0 for webcam
+cap = cv2.VideoCapture('medium-eye.mp4')  # Replace with 0 for webcam
 if not cap.isOpened():
     print("Error: Could not open video file or webcam.")
     exit()
@@ -71,7 +71,6 @@ def detect_face_emotion(frame):
         print(f"Emotion prediction error: {e}")
         return None, None
 
-# Calculate eye contact score using 3D iris landmarks
 def calculate_eye_contact_score(face_landmarks):
     # Extract iris landmarks (indices based on MediaPipe's documentation)
     left_iris_indices = [474, 475, 476, 477]
@@ -85,9 +84,56 @@ def calculate_eye_contact_score(face_landmarks):
     right_center = np.mean(right_iris, axis=0)
 
     # Calculate depth (z-coordinate) difference to approximate gaze alignment
-    depth_diff = abs(left_center[2] - right_center[2])
+    left_eye_depth = left_center[2]
+    right_eye_depth = right_center[2]
+
+    # Score based on the proximity of both eyes' depth to being aligned
+    depth_diff = abs(left_eye_depth - right_eye_depth)
     eye_contact_score = max(0, 100 - depth_diff * 4000)  # Normalize and scale
-    return round(eye_contact_score, 2)
+
+    # Horizontal and Vertical Gaze Direction Analysis
+    # Define eye contour indices (based on MediaPipe)
+    left_eye_indices = [33, 133, 160, 144, 145, 153, 154, 155]
+    right_eye_indices = [362, 263, 387, 373, 374, 380, 381, 382]
+
+    # Calculate bounding box for each eye
+    left_eye = np.array([(face_landmarks[i].x, face_landmarks[i].y) for i in left_eye_indices])
+    right_eye = np.array([(face_landmarks[i].x, face_landmarks[i].y) for i in right_eye_indices])
+
+    left_eye_bbox = np.ptp(left_eye, axis=0)  # Width, Height of left eye
+    right_eye_bbox = np.ptp(right_eye, axis=0)  # Width, Height of right eye
+
+    # Normalize iris center positions within eye bounding boxes
+    left_iris_normalized = (left_center[:2] - np.min(left_eye, axis=0)) / left_eye_bbox
+    right_iris_normalized = (right_center[:2] - np.min(right_eye, axis=0)) / right_eye_bbox
+
+    # Check if iris centers are near the center of their respective bounding boxes
+    horizontal_score = max(0, 100 - abs(left_iris_normalized[0] - 0.5) * 200 - abs(right_iris_normalized[0] - 0.5) * 200)
+    vertical_score = max(0, 100 - abs(left_iris_normalized[1] - 0.5) * 200 - abs(right_iris_normalized[1] - 0.5) * 200)
+
+    #print(horizontal_score)
+    #print(vertical_score)
+
+    # Pupil Size Variability
+    left_pupil_size = np.linalg.norm(left_iris[0] - left_iris[2])
+    right_pupil_size = np.linalg.norm(right_iris[0] - right_iris[2])
+
+    # Penalize based on pupil size discrepancy
+    pupil_size_diff = abs(left_pupil_size - right_pupil_size)
+    pupil_score = max(0, 100 - pupil_size_diff * 5000)
+
+    #print(pupil_score)
+
+    # Combine Depth, Gaze Alignment, Horizontal, Vertical, and Pupil Size Scores
+    final_eye_contact_score = (
+        0.8 * eye_contact_score +
+        0.05 * horizontal_score +
+        0.05 * vertical_score +
+        0.1 * pupil_score
+    )
+    final_eye_contact_score = max(0, min(100, final_eye_contact_score))  # Clamp to 0-100 range
+
+    return round(final_eye_contact_score, 2)
 
 # Hardcoded emotion grades
 emotion_grades = {
