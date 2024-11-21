@@ -8,11 +8,11 @@ import { LoginModel } from "../models/login-model";
 export class AuthService {
     private token = '';
     private isAuth = signal<boolean>(false);
-    private logoutTimer: any;
+    private logoutTimer: any = null;
 
     constructor(private http: HttpClient, private router: Router) {}
 
-    getIsAuth() {
+    getIsAuth(){
         return this.isAuth();
     }
 
@@ -49,7 +49,8 @@ export class AuthService {
                 this.logoutTimer = setTimeout(() => {this.logout()}, res.expiresIn * 10000);
                 const now = new Date();
                 const expiresDate = new Date(now.getTime() + (res.expiresIn * 1000));
-                this.storeLoginDetails(this.token, expiresDate);            } else {
+                this.storeLoginDetails(this.token, expiresDate);
+            } else {
                 console.error('Token is missing or invalid');
             }
             },
@@ -69,11 +70,12 @@ export class AuthService {
         )
         .subscribe({
             next: (res) => {
-            console.log('User logged out:', res);
-            this.token = '';
-            this.isAuth.set(false);
-            this.router.navigate(['/']);
-            clearTimeout(this.logoutTimer);
+                console.log('User logged out:', res);
+                this.token = '';
+                this.isAuth.set(false);
+                this.router.navigate(['/']);
+                clearTimeout(this.logoutTimer);
+                this.clearLoginDetails();
             },
             error: (err) => console.error('Logout failed:', err),
         });
