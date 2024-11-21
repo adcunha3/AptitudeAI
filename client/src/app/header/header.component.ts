@@ -1,31 +1,23 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit, computed } from '@angular/core';
 import { AuthService } from '../../services/auth-service';
-import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
-
-  private authenticationSub!: Subscription;
-  userAuthenticated = false;
-
+export class HeaderComponent {
   constructor(private authService: AuthService) {}
 
-  ngOnDestroy(): void {
-    this.authenticationSub.unsubscribe();
-  }
+  userAuthenticated = computed(() => this.authService.getIsAuth());
 
-  ngOnInit(): void {
-    this.authenticationSub = this.authService.getAuthenticatedSub().subscribe(status => {
-      this.userAuthenticated = status;
-    })
+  logout() {
+    this.authService.logout();
   }
-
 }
+
+
