@@ -1,9 +1,9 @@
-const User = require('../models/user.model');
+const User = require('../models/user.model.js');
 
 
 exports.getProfile = async (req, res) => {
     try {
-        const user = await User.findOne(req.params.username).select('-password'); // Exclude password field
+        const user = await User.findOne({ username: req.params.username }).select('-password'); // Exclude password field
         if (!user) {
             return res.status(404).send({ message: "User not found" });
         }
@@ -24,7 +24,7 @@ exports.updateProfile = async (req, res) => {
             interests: req.body.interests,
         };
 
-        const user = await User.findOneAndUpdate(req.params.username, updatedData, { new: true }).select('-password');
+        const user = await User.findOneAndUpdate({ username: req.params.username }, updatedData, { new: true }).select('-password');
         if (!user) {
             return res.status(404).send({ message: "User not found" });
         }

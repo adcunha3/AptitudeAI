@@ -17,6 +17,6 @@ module.exports = function(app) {
 
     app.post("/api/auth/signout", controller.signout);
 
-    app.get("/api/profile/:id", profileController.getProfile); 
-    app.put("/api/profile/:id", profileController.updateProfile); 
+    app.get("/api/profile/:username", profileController.getProfile); 
+    app.put("/api/profile/:username", profileController.updateProfile); 
 }
