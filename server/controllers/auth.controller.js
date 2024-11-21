@@ -52,7 +52,8 @@ exports.signin = async (req, res) => {
             username: user.username,
             email: user.email,
             role: user.role,
-            token: token
+            token: token,
+            expiresIn: 86400
         });
     } catch (err) {
         res.status(500).send({ message: err.message || "Error occurred while logging in." });

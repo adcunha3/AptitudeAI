@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession(
     {
-      name: "bezkoder-session",
+      name: "aptitude-session",
       keys: ["COOKIE_SECRET"],
       httpOnly: true
     }
