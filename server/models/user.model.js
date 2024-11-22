@@ -18,6 +18,12 @@ const UserSchema = mongoose.Schema({
     role: {
         type: String,
         required: true
+    },
+    interests: {
+        type: String,
+    },
+    bio: {
+        type: String,
     }
 }, { timestamps: true });
 

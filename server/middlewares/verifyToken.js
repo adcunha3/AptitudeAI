@@ -1,8 +1,8 @@
 const config = require("../config/auth.config.js");
 const jwt = require("jsonwebtoken");
 
-verifyToken = (req, res, next) => {
-    const token = req.session.token;
+const checkToken = (req, res, next) => {
+    const token = req.headers["authorization"] && req.headers["authorization"].split(" ")[1];
     
     if (!token) {
         return res.status(403).send({ message: "No token provided." });
@@ -18,7 +18,7 @@ verifyToken = (req, res, next) => {
 };
 
 const verifyToken = {
-    verifyToken
+    checkToken
 };
 
-module.exports = verifySignUp;
+module.exports = verifyToken;
