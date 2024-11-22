@@ -1,0 +1,68 @@
+/* General navbar styling with a clean, straight-edged design */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px; /* Adjusted padding for more space */
+    background-color: white; /* White background for clean contrast */
+    color: #4b0082; /* Dark purple text for a clean, modern look */
+    width: 100%; /* Full width */
+    margin: 0; /* No margin, since we're using full width */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Light shadow for subtle depth */
+}
+
+/* Brand name styling */
+.navbar-header {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand {
+    font-size: 1.8em; /* Larger font size for brand */
+    font-weight: bold;
+    color: #4b0082; /* Matching dark purple color */
+    text-decoration: none;
+}
+
+/* Links styling */
+.nav-links,
+.auth-links {
+    list-style: none;
+    display: flex;
+    gap: 25px; /* Increased gap for a cleaner look */
+    margin: 0;
+    padding: 0;
+}
+
+/* Links inside navbar */
+.nav-links li a,
+.auth-links li a {
+    text-decoration: none;
+    color: #4b0082; /* Dark purple links for consistency */
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hover effect for nav links */
+.nav-links li a:hover,
+.auth-links li a:hover {
+    background-color: #f0f0f0; /* Light grey hover effect */
+    color: #333; /* Darker text for hover effect */
+}
+
+/* Button styling for auth links */
+.auth-links li button {
+    background-color: #4b0082; /* Dark purple button */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for auth buttons */
+.auth-links li button:hover {
+    background-color: #3e006c; /* Slightly darker purple for hover */
+}

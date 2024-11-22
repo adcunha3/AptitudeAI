@@ -1,0 +1,18 @@
+<nav class="navbar">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="">Aptitude.ai</a>
+    </div>
+    <ul class="nav-links">
+      <li *ngIf="userAuthenticated()"><a href="/profile">Profile</a></li>
+      <li *ngIf="userAuthenticated()"><a href="/mock-interview">Mock Interview</a></li>
+      <li *ngIf="userAuthenticated()"><a href="/history">History</a></li>
+      <li *ngIf="userAuthenticated()"><a href="/leaderboard">Leaderboard</a></li>
+      <li *ngIf="userAuthenticated()"><a href="/messages">Messages</a></li>
+    </ul>
+    <ul class="auth-links">
+      <li *ngIf="!userAuthenticated()"><a href="/login">Log In</a></li>
+      <li *ngIf="!userAuthenticated()"><a href="/sign-up">Sign Up</a></li>
+      <li *ngIf="userAuthenticated()"><button (click)="logout()">Logout</button></li>
+    </ul>
+  </nav>
+  

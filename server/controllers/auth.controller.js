@@ -1,5 +1,4 @@
 const config = require("../config/auth.config.js");
-const Role = require("../models/role.model.js");
 const User = require("../models/user.model.js");
 
 const jwt = require("jsonwebtoken");
@@ -7,13 +6,11 @@ const bcrypt = require("bcryptjs");
 
 exports.signup = async (req, res) => {
     try {
-        const role = await Role.findOne({ name: req.body.roles });
-
         const user = new User({
             username: req.body.username,
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password, 8),
-            roles: [role._id]
+            role: req.body.role
         });
 
         await user.save();
@@ -54,8 +51,9 @@ exports.signin = async (req, res) => {
             id: user._id,
             username: user.username,
             email: user.email,
-            roles: user.roles,
-            token: token
+            role: user.role,
+            token: token,
+            expiresIn: 86400
         });
     } catch (err) {
         res.status(500).send({ message: err.message || "Error occurred while logging in." });

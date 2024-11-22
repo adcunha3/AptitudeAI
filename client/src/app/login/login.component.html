@@ -1,0 +1,16 @@
+<div class="form-container">
+    <h2>Aptitude.ai</h2>
+    <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input class="form-control" formControlName="username" type="text" placeholder="Username">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input class="form-control" formControlName="password" type="password" placeholder="Password">
+      </div>
+      <button [disabled]="!loginForm.valid" type="submit" class="btn-submit">Login</button>
+      <p class="login-link">Don't have an account? <a href="/sign-up">Sign Up</a></p>
+    </form>
+  </div>
+  
