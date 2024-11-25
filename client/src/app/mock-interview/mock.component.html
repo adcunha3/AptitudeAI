@@ -1,0 +1,54 @@
+<div class="mock-interview-container">
+    <!-- Video Feed Section -->
+    <div class="video-container">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+    </div>
+
+    <!-- Real-time Feedback Section -->
+    <div class="feedback-container">
+        <h3>Real-time Feedback</h3>
+
+        <!-- Eye Contact Score -->
+        <div class="score">
+            <label for="eye-contact">Eye Contact:</label>
+            <div class="progress-bar">
+                <div id="eye-contact-bar" class="progress" style="width: 0%;"></div>
+            </div>
+            <span id="eye-contact-score">0%</span>
+        </div>
+
+        <!-- Body Language Score -->
+        <div class="score">
+            <label for="body-language">Body Language:</label>
+            <div class="progress-bar">
+                <div id="body-language-bar" class="progress" style="width: 0%;"></div>
+            </div>
+            <span id="body-language-score">0%</span>
+        </div>
+
+        <!-- Emotion Score -->
+        <div class="score">
+            <label for="emotion">Emotion:</label>
+            <div class="progress-bar">
+                <div id="emotion-bar" class="progress" style="width: 0%;"></div>
+            </div>
+            <span id="emotion-score">0%</span>
+        </div>
+
+        <!-- Overall Score -->
+        <div class="score">
+            <label for="overall-score">Overall Score:</label>
+            <div class="progress-bar">
+                <div id="overall-score-bar" class="progress" style="width: 0%;"></div>
+            </div>
+            <span id="overall-score">0%</span>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button (click)="startFrameCapture()">Start Interview</button>
+        <button (click)="stopFrameCapture()">Stop Interview</button>
+    </div>
+</div>

@@ -1,78 +1,23 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-from deepface import DeepFace  # DeepFace for emotion detection
-import threading
-import time
-from queue import Queue
+from deepface import DeepFace
 import math
+import json
+import base64  # Import base64 module
+# Suppress TensorFlow logs
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# Initialize MediaPipe Face Mesh
+# Suppress oneDNN logs
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
+# Alternatively, configure TensorFlow logging directly
+tf.get_logger().setLevel('ERROR')
+# Initialize MediaPipe Face Mesh and Pose
 mp_face_mesh = mp.solutions.face_mesh
-mp_drawing = mp.solutions.drawing_utils
-mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
 
-# Initialize video
-cap = cv2.VideoCapture('review.mp4')  # Replace with 0 for webcam
-if not cap.isOpened():
-    print("Error: Could not open video file or webcam.")
-    exit()
-
-# Get video FPS to match playback speed
-fps = cap.get(cv2.CAP_PROP_FPS)
-frame_delay = int(1000 / fps)  # Milliseconds per frame
-
-# Variables for control
-start_detection = False
-final_overall_score = 0
-total_frames = 0
-average_score = None
-frame_counter = 0  # Frame counter to control emotion detection frequency
-
-# Variables to store the current emotion and its score
-current_emotion = None
-current_emotion_score = None
-
-# Thread-safe Queue to store emotion data
-emotion_queue = Queue()
-
-# Mouse callback function for controlling the detection
-def mouse_callback(event, x, y, flags, param):
-    global start_detection, final_overall_score, total_frames, average_score
-    if event == cv2.EVENT_LBUTTONDOWN:
-        if 10 <= x <= 110 and 10 <= y <= 60:  # Start button
-            start_detection = True
-            final_overall_score = 0
-            total_frames = 0
-            average_score = None
-            print("Detection started...")
-        elif 130 <= x <= 230 and 10 <= y <= 60:  # End button
-            start_detection = False
-            if total_frames > 0:
-                average_score = round(final_overall_score / total_frames, 2)
-                print(f"Detection stopped. Final Average Score: {average_score}%")
-            else:
-                print("Detection stopped. No frames detected.")
-
-cv2.namedWindow('AI Interview Detection')
-cv2.setMouseCallback('AI Interview Detection', mouse_callback)
-
-# Detect face emotion function using DeepFace
-def detect_face_emotion(frame):
-    """
-    Detects emotion using DeepFace library.
-    """
-    try:
-        # DeepFace analyzes the frame and returns the dominant emotion
-        analysis = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
-        emotion_class = analysis[0]['dominant_emotion']  # Get the dominant emotion
-        emotion_score = analysis[0]['emotion'][emotion_class]  # Emotion score
-        return emotion_class, emotion_score
-    except Exception as e:
-        print(f"Emotion prediction error: {e}")
-        return None, None
-
+# Function to calculate eye contact score
 def calculate_eye_contact_score(face_landmarks):
     # Extract iris landmarks (indices based on MediaPipe's documentation)
     left_iris_indices = [474, 475, 476, 477]
@@ -137,7 +82,8 @@ def calculate_eye_contact_score(face_landmarks):
 
     return round(final_eye_contact_score, 2)
 
-# Function to calculate the angle between three points
+
+# Function to calculate body language score
 def calculate_angle(a, b, c):
     angle = math.atan2(c.y - b.y, c.x - b.x) - math.atan2(a.y - b.y, a.x - b.x)
     return abs(math.degrees(angle)) % 360
@@ -177,116 +123,73 @@ def calculate_body_language_score(pose_landmarks):
 
     return round(total_score, 2)
 
+# Function to detect emotion using DeepFace
+def detect_face_emotion(frame):
+    try:
+        analysis = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
+        emotion_class = analysis[0]['dominant_emotion']
+        emotion_score = analysis[0]['emotion'][emotion_class]
+        return emotion_class, emotion_score
+    except Exception as e:
+        print(f"Emotion detection error: {e}")
+        return None, None
 
-# Hardcoded emotion grades
-emotion_grades = {
-    'surprise': 75,
-    'fear': 15,
-    'happy': 100,
-    'neutral': 60,
-    'angry': 45,
-    'sad': 30
-}
+# Process single frame
+def process_frame(frame):
+    # Convert the frame to RGB
+    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-# Emotion thread function to process emotion detection in background
-def emotion_thread(frame):
-    global current_emotion, current_emotion_score
-    emotion_class, emotion_score = detect_face_emotion(frame)
+    # Initialize MediaPipe solutions
+    with mp_face_mesh.FaceMesh(refine_landmarks=True) as face_mesh, mp_pose.Pose() as pose:
+        face_results = face_mesh.process(rgb_frame)
+        pose_results = pose.process(rgb_frame)
 
-    if emotion_class:
-        # Check if the emotion has a hardcoded grade
-        if emotion_class in emotion_grades:
-            emotion_score = emotion_grades[emotion_class]  # Normalize to 0-100 range
+        # Initialize scores
+        eye_contact_score = 0
+        body_language_score = 0
+        emotion_score = 0
+        overall_score = 0
 
-        # Update emotion only if it's different from the current one
-        if emotion_class != current_emotion:
-            current_emotion = emotion_class
-            current_emotion_score = emotion_score
+        # Calculate eye contact score if face landmarks are detected
+        if face_results.multi_face_landmarks:
+            for face_landmarks in face_results.multi_face_landmarks:
+                eye_contact_score = calculate_eye_contact_score(face_landmarks.landmark)
+                break  # Only process the first face for simplicity
 
+        # Calculate body language score if pose landmarks are detected
+        if pose_results.pose_landmarks:
+            body_language_score = calculate_body_language_score(pose_results.pose_landmarks.landmark)
 
-# Initialize MediaPipe Face Mesh and Pose
-with mp_face_mesh.FaceMesh(refine_landmarks=True) as face_mesh, mp_pose.Pose() as pose:
-    last_emotion_time = time.time()
-    emotion_cooldown = 1.5
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            print("End of video or cannot read frame.")
-            break
+        # Perform emotion detection
+        emotion_class, detected_emotion_score = detect_face_emotion(frame)
+        if detected_emotion_score:
+            emotion_score = detected_emotion_score
 
-        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # Calculate overall score as a weighted average
+        overall_score = (0.4 * eye_contact_score + 0.4 * body_language_score + 0.2 * emotion_score)
 
-        if start_detection:
-            face_results = face_mesh.process(rgb_frame)
-            pose_results = pose.process(rgb_frame)
+        # Return all calculated metrics
+        return {
+            "eye_contact": round(eye_contact_score, 2),
+            "body_language": round(body_language_score, 2),
+            "emotion_score": round(emotion_score, 2),
+            "overall_score": round(overall_score, 2),
+        }
 
-            if face_results.multi_face_landmarks:
-                for face_landmarks in face_results.multi_face_landmarks:
-                    # Calculate eye contact score
-                    eye_contact_score = calculate_eye_contact_score(face_landmarks.landmark)
-                    
-                    # Calculate body language score
-                    if pose_results.pose_landmarks:
-                        body_language_score = calculate_body_language_score(pose_results.pose_landmarks.landmark)
+# Entry point to process a frame and output JSON result
+if __name__ == "__main__":
+    import sys
 
-                    # Only perform emotion detection if cooldown period has passed
-                    if time.time() - last_emotion_time > emotion_cooldown:
-                        threading.Thread(target=emotion_thread, args=(frame,)).start()
-                        last_emotion_time = time.time()
+    # Read input JSON from stdin
+    input_data = sys.stdin.read()
+    input_frame_data = json.loads(input_data).get("frame")
 
-                    # Combine metrics
-                    combined_score = eye_contact_score
-                    if current_emotion_score is not None:
-                        combined_score = (eye_contact_score + current_emotion_score + body_language_score)/3
+    # Decode Base64 frame (ensure input is Base64 encoded)
+    nparr = np.frombuffer(base64.b64decode(input_frame_data), np.uint8)
+    frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-                    final_overall_score += combined_score
-                    total_frames += 1
+    # Process the frame and calculate scores
+    results = process_frame(frame)
 
-                    # Display metrics
-                    cv2.putText(frame, f"Eye Contact: {eye_contact_score}%", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-                    if current_emotion:
-                        cv2.putText(frame, f"Emotion: {current_emotion} ({round(current_emotion_score, 2)}%)", (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
-                    if body_language_score:
-                        cv2.putText(frame, f"Body Language: {body_language_score}%", (10, 170), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
-                    if combined_score > 0:
-                        cv2.putText(frame, f"Combined Score: {round(combined_score, 2)}%", (10, 210), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-
-                    # Draw face mesh and iris landmarks
-                    mp_drawing.draw_landmarks(
-                        frame,
-                        face_landmarks,
-                        mp_face_mesh.FACEMESH_IRISES,
-                        landmark_drawing_spec=None,
-                        connection_drawing_spec=mp_drawing_styles.get_default_face_mesh_iris_connections_style()
-                    )
-
-                    if pose_results.pose_landmarks:
-                        mp_drawing.draw_landmarks(
-                        frame,
-                        pose_results.pose_landmarks,
-                        mp_pose.POSE_CONNECTIONS
-                    )
-
-                    # Draw a status bar
-                    bar_width = int(combined_score * 2)  # Scale for visualization
-                    cv2.rectangle(frame, (10, 250), (10 + bar_width, 300), (0, 255, 0), -1)  # Filled bar
-                    cv2.rectangle(frame, (10, 250), (210, 300), (255, 255, 255), 2)  # Border
-
-        # Draw "Start" and "End" buttons
-        cv2.rectangle(frame, (10, 10), (110, 60), (0, 255, 0), -1)
-        cv2.putText(frame, "Start", (20, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
-        cv2.rectangle(frame, (130, 10), (230, 60), (0, 0, 255), -1)
-        cv2.putText(frame, "End", (140, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
-
-        if average_score is not None:
-            cv2.putText(frame, f"Final Average Score: {average_score}%", (10, 250), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
-
-        # Display the frame
-        cv2.imshow('AI Interview Detection', frame)
-
-        # Maintain video playback speed
-        if cv2.waitKey(frame_delay) & 0xFF == ord('q'):
-            break
-
-cap.release()
-cv2.destroyAllWindows()
+    # Print results as JSON
+    print(json.dumps(results))
