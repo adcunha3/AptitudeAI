@@ -22,6 +22,7 @@ export class InterviewComponent implements OnInit {
   }
 
   initializeWebcam(): void {
+    // Access webcam and start video stream
     navigator.mediaDevices.getUserMedia({ video: true })
       .then((stream) => {
         this.videoElement.srcObject = stream;
@@ -34,20 +35,21 @@ export class InterviewComponent implements OnInit {
 
   sendFrameToBackend(): void {
     if (this.ctx) {
+      // Draw the current frame from video onto the canvas
       this.ctx.drawImage(this.videoElement, 0, 0, this.canvasElement.width, this.canvasElement.height);
       const frameData = this.canvasElement.toDataURL('image/jpeg'); // Convert frame to Base64
 
-      // Send frame to backend
-      fetch('/api/interview/process-frame', {
+      // Send frame to backend API
+      fetch('http://localhost:3000/api/process-frame', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ frame: frameData }),
       })
-        .then((response) => response.json())
+        .then((response) => response.json()) // Parse JSON response
         .then((data) => {
           console.log('Response from backend:', data);
 
-          // Update progress bars dynamically
+          // Update progress bars dynamically based on response
           this.updateProgressBar('eye-contact-bar', 'eye-contact-score', data.eye_contact || 0);
           this.updateProgressBar('body-language-bar', 'body-language-score', data.body_language || 0);
           this.updateProgressBar('emotion-bar', 'emotion-score', data.emotion_score || 0);
@@ -64,13 +66,12 @@ export class InterviewComponent implements OnInit {
     const scoreElement = document.getElementById(scoreId);
 
     if (barElement) {
-      barElement.style.width = `${value}%`;
+      barElement.style.width = `${value}%`; // Set progress bar width
     }
     if (scoreElement) {
-      scoreElement.textContent = `${value}%`;
+      scoreElement.textContent = `${value}%`; // Update score text
     }
   }
-
 
   startFrameCapture(): void {
     // Capture frames periodically (e.g., every second)

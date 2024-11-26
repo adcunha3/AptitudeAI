@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const cookieSession = require('cookie-session');
+const fs = require('fs'); // Add this line to import the fs module
 
 const { connectDB } = require('./config/db.config.js');
 const processFrameRoute = require('./routes/interview.routes.js'); // Update path as needed
@@ -33,7 +34,7 @@ app.use(cookieSession({
   httpOnly: true
 }));
 
-app.use('/api', processFrameRoute);
+app.use('/api', processFrameRoute);  // Use /api to prefix all routes defined in interview.routes.js
 
 // Test route
 app.get("/", (req, res) => {
