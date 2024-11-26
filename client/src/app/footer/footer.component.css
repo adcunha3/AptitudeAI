@@ -1,9 +1,15 @@
-/* footer.component.css */
+.flex-wrapper {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: flex-start;
+}
 .footer {
     background-color: #4b0082;
     color: white;
     padding: 40px 20px;
     text-align: center;
+    margin-top: auto; /* Pushes footer to the bottom */
   }
   .footer-container {
     max-width: 1200px;
