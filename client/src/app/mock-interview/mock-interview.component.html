@@ -1,0 +1,20 @@
+<div class="ui">
+    <div class="wrapper">
+      <div class="recorder">
+  
+        <div class="preview">
+          <video #videoElement [class.view]="videoBlobUrl">
+            <source *ngIf="!isVideoRecording && videoBlobUrl" [src]="videoBlobUrl">
+          </video>
+          <div class="controller">
+            <button type="button" (click)="startVideoRecording()" *ngIf="!isVideoRecording">
+                Start
+            </button>
+            <button type="button" (click)="downloadAndClearVideo()" *ngIf="isVideoRecording">
+                End
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
