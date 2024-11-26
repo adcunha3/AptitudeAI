@@ -1,5 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, effect, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { Component, ViewChild, ElementRef, computed } from '@angular/core';
 import { VideoRecordingService } from '../../services/video-recording.service';
 import { CommonModule } from '@angular/common';
 
@@ -8,102 +7,132 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './mock-interview.component.html',
-  styleUrl: './mock-interview.component.css',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  styleUrls: ['./mock-interview.component.css'],
 })
 export class MockInterviewComponent {
+  @ViewChild('recordedVideo') recordVideoElementRef!: ElementRef;
+  @ViewChild('video') videoElementRef!: ElementRef;
+  @ViewChild('canvas') canvasElementRef!: ElementRef;
 
+  videoElement!: HTMLVideoElement;
+  recordVideoElement!: HTMLVideoElement;
+  mediaRecorder!: any;
+  recordedBlobs!: Blob[];
+  isRecording: boolean = false;
+  downloadUrl!: string;
+  stream!: MediaStream;
+  canvasElement!: HTMLCanvasElement;
+  ctx!: CanvasRenderingContext2D | null;
+  intervalId!: any;
 
-  @ViewChild('videoElement', { static: true }) videoElement: any;
+  constructor(private videoRecordingService: VideoRecordingService) {}
 
-  video: any;
-  isVideoRecording = false;
-  videoBlobUrl: any;
-  videoBlob: any;
-  videoName = '';
-  videoStream: MediaStream | null = null;
-  videoConf = { video: { facingMode: "user", width: 320 }, audio: true }
-
-  constructor(
-    private ref: ChangeDetectorRef,
-    private sanitizer: DomSanitizer,
-    private videoRecordingService: VideoRecordingService,
-  ) {
-    effect(() => {
-      const failed = this.videoRecordingService.getRecordingFailed()();
-      if (failed) {
-        this.isVideoRecording = false;
-        this.ref.detectChanges();
-      }
-    });
-
-    effect(() => {
-      const stream = this.videoRecordingService.getStream()();
-      this.videoStream = stream;
-      this.ref.detectChanges();
-    });
-
-    effect(() => {
-      const data = this.videoRecordingService.getRecordedBlob();
-      if (data) {
-        const blobData = data();
-        if (blobData) {
-          this.videoBlob = blobData.blob;
-          this.videoName = blobData.title;
-          this.videoBlobUrl = this.sanitizer.bypassSecurityTrustUrl(blobData.url);
+  async ngOnInit() {
+    navigator.mediaDevices
+      .getUserMedia({
+        video: {
+          width: 360
         }
-      }
-    });
-    effect(() => {
-      const base64Image = this.videoRecordingService.getBase64Image()();
-      if (base64Image) {
-        console.log('Base64 Frame:', base64Image);
-      }
-    });    
+      })
+      .then(stream => {
+        this.videoElement = this.videoElementRef.nativeElement;
+        this.recordVideoElement = this.recordVideoElementRef.nativeElement;
+
+        this.stream = stream;
+        this.videoElement.srcObject = this.stream;
+      });
+
+      this.canvasElement = this.canvasElementRef.nativeElement;
+      this.ctx = this.canvasElement.getContext('2d');
   }
 
-  ngOnInit() {
-    this.video = this.videoElement.nativeElement;
+  startRecording() {
+    this.recordedBlobs = [];
+    let options: any = { mimeType: 'video/webm' };
+
+    try {
+      this.mediaRecorder = new MediaRecorder(this.stream, options);
+    } catch (err) {
+      console.log(err);
+    }
+
+    this.mediaRecorder.start();
+    this.isRecording = !this.isRecording;
+
+    this.intervalId = setInterval(() => {
+      if (this.ctx) {
+        this.ctx.drawImage(this.videoElement, 0, 0, this.canvasElement.width, this.canvasElement.height);
+        const frameData = this.canvasElement.toDataURL('image/jpeg');
+        this.videoRecordingService.uploadBase64Image(frameData);
+      }
+    }, 1000);
+
+    this.onDataAvailableEvent();
+    this.onStopRecordingEvent();
   }
 
-  startVideoRecording() {
-    if (!this.isVideoRecording) {
-      this.video.controls = false;
-      this.isVideoRecording = true;
-      this.videoRecordingService.startRecording(this.videoConf)
-        .then(stream => {
-          this.video.srcObject = stream;
-          this.video.play();
-        })
-        .catch(function (err) {
-          console.log(err.name + ": " + err.message);
-        });
+  stopRecording() {
+    this.mediaRecorder.stop();
+    this.isRecording = !this.isRecording;
+    console.log('Recorded Blobs: ', this.recordedBlobs);
+    if (this.stream) {
+      this.stream.getTracks().forEach(track => track.stop());
+    }
+    clearInterval(this.intervalId);
+    this.uploadRecording();
+  }
+
+  playRecording() {
+    if (!this.recordedBlobs || !this.recordedBlobs.length) {
+      console.log('cannot play.');
+      return;
+    }
+    this.recordVideoElement.play();
+  }
+
+  onDataAvailableEvent() {
+    try {
+      this.mediaRecorder.ondataavailable = (event: any) => {
+        if (event.data && event.data.size > 0) {
+          this.recordedBlobs.push(event.data);
+        }
+      };
+    } catch (error) {
+      console.log(error);
     }
   }
 
-  clearVideoRecordedData() {
-    this.videoBlobUrl = null;
-    this.video.srcObject = null;
-    this.video.controls = false;
-    this.isVideoRecording = false;
-    this.ref.detectChanges();
+  onStopRecordingEvent() {
+    try {
+      this.mediaRecorder.onstop = (event: Event) => {
+        const videoBuffer = new Blob(this.recordedBlobs, {
+          type: 'video/webm'
+        });
+        this.downloadUrl = window.URL.createObjectURL(videoBuffer);
+        this.recordVideoElement.src = this.downloadUrl;
+      };
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  _downloadFile(data: any, type: string, filename: string): any {
-    const blob = new Blob([data], { type: type });
-    const url = window.URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.download = filename;
-    anchor.href = url;
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
+  uploadRecording() {
+    const videoBuffer = new Blob(this.recordedBlobs, { type: 'video/webm' });
+    const file = new File([videoBuffer], 'recording.webm', { type: 'video/webm' });
+    this.videoRecordingService.uploadFile(file);
   }
 
-  downloadAndClearVideo() {
-    this._downloadFile(this.videoBlob, 'video/mp4', this.videoName);
-    this.clearVideoRecordedData();
-    console.log(this.videoBlobUrl);
-  }
+  updateProgressBar(barId: string, scoreId: string, value: number): void {
+    const barElement = document.getElementById(barId);
+    const scoreElement = document.getElementById(scoreId);
 
+    if (barElement) {
+      barElement.style.width = `${value}%`;
+    }
+    if (scoreElement) {
+      scoreElement.textContent = `${value}%`;
+    }
+  }
+  
 }
+
