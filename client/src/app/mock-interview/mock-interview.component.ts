@@ -1,6 +1,10 @@
-import { Component, ViewChild, ElementRef, computed } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { VideoRecordingService } from '../../services/video-recording.service';
 import { CommonModule } from '@angular/common';
+import { FFmpeg } from '@ffmpeg/ffmpeg';
+import { fetchFile, toBlobURL } from '@ffmpeg/util';
+
+const baseURL = "https://unpkg.com/@ffmpeg/core-mt@0.12.6/dist/esm";
 
 @Component({
   selector: 'app-mock-interview',
@@ -9,7 +13,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './mock-interview.component.html',
   styleUrls: ['./mock-interview.component.css'],
 })
-export class MockInterviewComponent {
+export class MockInterviewComponent implements OnInit{
   @ViewChild('recordedVideo') recordVideoElementRef!: ElementRef;
   @ViewChild('video') videoElementRef!: ElementRef;
   @ViewChild('canvas') canvasElementRef!: ElementRef;
@@ -40,10 +44,10 @@ export class MockInterviewComponent {
 
         this.stream = stream;
         this.videoElement.srcObject = this.stream;
-      });
 
-      this.canvasElement = this.canvasElementRef.nativeElement;
-      this.ctx = this.canvasElement.getContext('2d');
+        this.canvasElement = this.canvasElementRef.nativeElement;
+        this.ctx = this.canvasElement.getContext('2d');
+      });
   }
 
   startRecording() {
@@ -104,12 +108,13 @@ export class MockInterviewComponent {
 
   onStopRecordingEvent() {
     try {
-      this.mediaRecorder.onstop = (event: Event) => {
+      this.mediaRecorder.onstop = async (event: Event) => {
         const videoBuffer = new Blob(this.recordedBlobs, {
           type: 'video/webm'
         });
         this.downloadUrl = window.URL.createObjectURL(videoBuffer);
         this.recordVideoElement.src = this.downloadUrl;
+
       };
     } catch (error) {
       console.log(error);
