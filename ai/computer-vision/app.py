@@ -10,6 +10,8 @@ app = Flask(__name__)
 
 CORS(app)
 
+CORS(app, resources={r"/*": {"origins": "*"}})
+
 def decode_base64_image(base64_image):
     """Decode a Base64-encoded image into a NumPy array."""
     try:

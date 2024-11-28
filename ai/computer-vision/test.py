@@ -16,6 +16,7 @@ from deepface import DeepFace
 import json
 import math
 import logging
+
 # Set up logging
 logging.basicConfig(
     level=logging.DEBUG,  # Set to DEBUG to capture all logs
@@ -27,6 +28,7 @@ logger = logging.getLogger()
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from absl import logging
 logging.set_verbosity(logging.ERROR)
+
 # Initialize MediaPipe Face Mesh and Pose
 mp_face_mesh = mp.solutions.face_mesh
 mp_pose = mp.solutions.pose
@@ -42,7 +44,7 @@ def calculate_eye_contact_score(face_landmarks):
 
     left_center = np.mean(left_iris, axis=0)
     right_center = np.mean(right_iris, axis=0)
-    
+
     left_eye_depth = left_center[2]
     right_eye_depth = right_center[2]
     depth_diff = abs(left_eye_depth - right_eye_depth)
@@ -104,14 +106,22 @@ def calculate_body_language_score(pose_landmarks):
 
 # Emotion Detection Using DeepFace
 def detect_face_emotion(frame):
+    emotion_grades = {
+        'surprise': 75,
+        'fear': 15,
+        'happy': 100,
+        'neutral': 60,
+        'angry': 45,
+        'sad': 30
+    }
     try:
         analysis = DeepFace.analyze(frame, actions=['emotion'], enforce_detection=False)
-        emotion_class = analysis[0]['dominant_emotion']
-        emotion_score = analysis[0]['emotion'][emotion_class]
-        return emotion_class, emotion_score
+        emotion_class = analysis[0]['dominant_emotion']  # Get the dominant emotion as a string
+        emotion_score = emotion_grades.get(emotion_class, 0)  # Fetch score from the predefined dictionary
+        return emotion_score
     except Exception as e:
         print(f"Emotion detection error: {e}")
-        return None, None
+        return 0
 
 # Main Frame Processing
 def process_frame(frame):
@@ -132,16 +142,14 @@ def process_frame(frame):
         if pose_results.pose_landmarks:
             body_language_score = calculate_body_language_score(pose_results.pose_landmarks.landmark)
 
-        emotion_class, detected_emotion_score = detect_face_emotion(frame)
-        if detected_emotion_score:
-            emotion_score = detected_emotion_score
+        emotion_score = detect_face_emotion(frame)
 
         overall_score = (0.4 * eye_contact_score + 0.4 * body_language_score + 0.2 * emotion_score)
 
         return {
             "eye_contact": round(eye_contact_score, 2),
             "body_language": round(body_language_score, 2),
-            "emotion_score": round(emotion_score, 2),
+            "emotion_score": round(emotion_score, 2),  # Only include the emotion score
             "overall_score": round(overall_score, 2),
         }
 
@@ -149,34 +157,34 @@ if __name__ == "__main__":
     try:
         # Log script start
         logger.debug("Python script started.")
-        
+
         # Get the file path from command-line arguments
         if len(sys.argv) < 2:
             logger.error("No file path provided as an argument.")
             raise ValueError("Image file path is required.")
         file_path = sys.argv[1]
         logger.debug(f"Image file path: {file_path}")
-        
+
         # Load and validate the image
         frame = cv2.imread(file_path)
         if frame is None:
             logger.error("Failed to read the image from the file.")
             raise ValueError("Failed to read the image from the file.")
         logger.debug("Image loaded successfully.")
-        
+
         # Resize the frame
         frame = cv2.resize(frame, (640, 480))
         logger.debug("Image resized to 640x480.")
-        
+
         # Process the frame
         logger.debug("Starting frame processing...")
         results = process_frame(frame)
         logger.debug(f"Processing results: {results}")
-        
+
         # Print results in JSON format
         print(json.dumps(results))
         logger.debug("Results successfully printed as JSON.")
-    
+
     except Exception as e:
         exc_type, exc_value, exc_tb = sys.exc_info()
         error_message = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))

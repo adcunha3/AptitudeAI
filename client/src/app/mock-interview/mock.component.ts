@@ -37,7 +37,7 @@ export class InterviewComponent implements OnInit {
     if (this.ctx) {
       // Draw the current frame from video onto the canvas
       this.ctx.drawImage(this.videoElement, 0, 0, this.canvasElement.width, this.canvasElement.height);
-      const frameData = this.canvasElement.toDataURL('image/jpeg',0.3); // Convert frame to Base64
+      const frameData = this.canvasElement.toDataURL('image/jpeg', 0.3); // Convert frame to Base64
 
       // Send frame to backend API
       fetch('http://localhost:5000/process-frame', {
@@ -67,15 +67,26 @@ export class InterviewComponent implements OnInit {
 
     if (barElement) {
       barElement.style.width = `${value}%`; // Set progress bar width
+      barElement.style.background = this.getBarColor(value); // Update gradient color
     }
     if (scoreElement) {
       scoreElement.textContent = `${value}%`; // Update score text
     }
   }
 
+  getBarColor(value: number): string {
+    if (value <= 30) {
+      return 'linear-gradient(to right, #ff4d4d, #ff6666)'; // Red shades
+    } else if (value <= 70) {
+      return 'linear-gradient(to right, #ffcc00, #ffd633)'; // Yellow shades
+    } else {
+      return 'linear-gradient(to right, #4caf50, #66bb6a)'; // Green shades
+    }
+  }
+
   startFrameCapture(): void {
     // Capture frames periodically (e.g., every second)
-    this.intervalId = setInterval(() => this.sendFrameToBackend(), 150);
+    this.intervalId = setInterval(() => this.sendFrameToBackend(), 500);
   }
 
   stopFrameCapture(): void {
