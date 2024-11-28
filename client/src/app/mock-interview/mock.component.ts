@@ -40,7 +40,7 @@ export class InterviewComponent implements OnInit {
       const frameData = this.canvasElement.toDataURL('image/jpeg',0.3); // Convert frame to Base64
 
       // Send frame to backend API
-      fetch('http://localhost:3000/api/process-frame', {
+      fetch('http://localhost:5000/process-frame', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ frame: frameData }),
@@ -75,7 +75,7 @@ export class InterviewComponent implements OnInit {
 
   startFrameCapture(): void {
     // Capture frames periodically (e.g., every second)
-    this.intervalId = setInterval(() => this.sendFrameToBackend(), 1000);
+    this.intervalId = setInterval(() => this.sendFrameToBackend(), 150);
   }
 
   stopFrameCapture(): void {
