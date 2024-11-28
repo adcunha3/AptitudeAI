@@ -37,7 +37,7 @@ export class InterviewComponent implements OnInit {
     if (this.ctx) {
       // Draw the current frame from video onto the canvas
       this.ctx.drawImage(this.videoElement, 0, 0, this.canvasElement.width, this.canvasElement.height);
-      const frameData = this.canvasElement.toDataURL('image/jpeg'); // Convert frame to Base64
+      const frameData = this.canvasElement.toDataURL('image/jpeg',0.3); // Convert frame to Base64
 
       // Send frame to backend API
       fetch('http://localhost:3000/api/process-frame', {

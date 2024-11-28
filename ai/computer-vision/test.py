@@ -1,10 +1,12 @@
+import os
 import cv2
 import mediapipe as mp
 import numpy as np
 from deepface import DeepFace
 import math
 import json
-import base64  # Import base64 module
+import base64
+import tensorflow as tf  # Import base64 module
 # Suppress TensorFlow logs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
