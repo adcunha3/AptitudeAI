@@ -7,7 +7,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
 
 def decode_base64_image(base64_image):
     """Decode a Base64-encoded image into a NumPy array."""
@@ -20,6 +20,14 @@ def decode_base64_image(base64_image):
         return image
     except Exception as e:
         raise ValueError(f"Failed to decode image: {str(e)}")
+    
+@app.after_request
+def add_cors_headers(response):
+    response.headers.add("Access-Control-Allow-Origin", "http://localhost:4200")
+    response.headers.add("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+    response.headers.add("Access-Control-Allow-Credentials", "true")
+    return response
 
 @app.route('/process-frame', methods=['POST'])
 def process_frame_route():
