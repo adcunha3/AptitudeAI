@@ -1,0 +1,46 @@
+<div style="text-align:center">
+    <h1>Welcome to WebRTC</h1>
+    <div class="container">
+        <div class="video-container">
+            <video class="video" #video autoplay controls></video>
+            <canvas id="canvas" width="640" height="480" style="display: none;" #canvas></canvas>
+            <video class="video" style="width:360 !important;" controls #recordedVideo></video>
+        </div>
+        <div class="feedback-container">
+            <h3>Real-time Feedback</h3>
+            <div class="score">
+                <label for="eye-contact">Eye Contact:</label>
+                <div class="progress-bar">
+                    <div id="eye-contact-bar" class="progress" style="width: 0%;"></div>
+                </div>
+                <span id="eye-contact-score">0%</span>
+            </div>
+            <div class="score">
+                <label for="body-language">Body Language:</label>
+                <div class="progress-bar">
+                    <div id="body-language-bar" class="progress" style="width: 0%;"></div>
+                </div>
+                <span id="body-language-score">0%</span>
+            </div>
+            <div class="score">
+                <label for="emotion">Emotion:</label>
+                <div class="progress-bar">
+                    <div id="emotion-bar" class="progress" style="width: 0%;"></div>
+                </div>
+                <span id="emotion-score">0%</span>
+            </div>
+            <div class="score">
+                <label for="overall-score">Overall Score:</label>
+                <div class="progress-bar">
+                    <div id="overall-score-bar" class="progress" style="width: 0%;"></div>
+                </div>
+                <span id="overall-score">0%</span>
+            </div>
+        </div>
+    </div>
+    <span class="m-1"></span>
+    <br>
+    <button class="btn btn-primary btn-lg" *ngIf="!isRecording" (click)="startRecording()">Start Recording</button>
+    <button class="btn btn-warning btn-lg" *ngIf="isRecording" (click)="stopRecording()">Stop Recording</button>
+</div>
+  

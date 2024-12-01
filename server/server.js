@@ -38,6 +38,8 @@ app.get("/", (req, res) => {
 
 // Routes
 require("./routes/auth.routes.js")(app);
+app.use("/api/files", require("./routes/file.routes")); // File upload routes
+
 
 app.listen(3000, () => { console.log('App running on port 3000'); });
 

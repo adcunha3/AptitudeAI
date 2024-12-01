@@ -5,14 +5,14 @@ import { SignupComponent } from './signup/signup.component';
 import { RouteGuard } from '../guards/route-guard';
 import { ProfileComponent } from './profile/profile.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
-import { InterviewComponent } from './mock-interview/mock.component';
+import { MockInterviewComponent } from './mock-interview/mock-interview.component';
 
 export const routes: Routes = [
-  { path: '', component: LandingPageComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'sign-up', component: SignupComponent },
-  { path: 'profile', component: ProfileComponent, canActivate: [RouteGuard] },
-  { path: 'mock-interview', component: InterviewComponent }
+    {path: '', component:LandingPageComponent},
+    {path: 'login', component:LoginComponent},
+    {path: 'sign-up', component:SignupComponent},
+    {path: 'profile', component:ProfileComponent, canActivate:[RouteGuard]},
+    {path: 'mock-interview', component:MockInterviewComponent, canActivate: [RouteGuard]}
 ];
 
 @NgModule({
