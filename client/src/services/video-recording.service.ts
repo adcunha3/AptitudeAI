@@ -9,7 +9,7 @@ export class VideoRecordingService {
 
     uploadFile(file: File) {
         const formData: FormData = new FormData();
-        formData.append('video', file, file.name);
+        formData.append('file', file, file.name);
 
         this.http
             .post('http://localhost:3000/api/files/upload', formData)
