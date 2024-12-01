@@ -1,0 +1,44 @@
+/* Profile picture container */
+.profile-picture {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.upload-btn {
+    display: inline-block;
+    font-size: 14px;
+    background-color: #007bff;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.upload-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Form field styling */
+textarea.form-control {
+    resize: none;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+textarea:focus,
+input:focus {
+    border-color: #007bff;
+    outline: none;
+}

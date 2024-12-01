@@ -1,1 +1,19 @@
-<p>profile works!</p>
+<form (ngSubmit)="onSaveProfile()" [formGroup]="profileForm">
+  <div>
+    <label for="name">Name</label>
+    <input id="name" formControlName="name" type="text" />
+  </div>
+  <div>
+    <label for="email">Email</label>
+    <input id="email" formControlName="email" type="email" />
+  </div>
+  <div>
+    <label for="profileImage">Profile Image</label>
+    <input id="profileImage" type="file" (change)="onFileSelected($event)" />
+    <img
+      [src]="profileForm.get('profileImage')?.value || 'https://via.placeholder.com/150'"
+      alt="Profile Image"
+    />
+  </div>
+  <button [disabled]="!profileForm.valid" type="submit">Save</button>
+</form>
