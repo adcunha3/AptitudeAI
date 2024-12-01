@@ -2,13 +2,10 @@ from flask import Flask, request, jsonify
 import cv2
 import base64
 import numpy as np
-from test import process_frame  # Import your processing function
+from test import process_frame
 from flask_cors import CORS
 
-
 app = Flask(__name__)
-
-CORS(app)
 
 CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -56,6 +53,10 @@ def process_frame_route():
     except Exception as e:
         app.logger.exception("An unexpected error occurred.")
         return jsonify({'error': 'An unexpected error occurred. Please try again later.'}), 500
+    
+@app.route('/test-cors', methods=['GET', 'OPTIONS'])
+def test_cors():
+    return jsonify({"message": "CORS is working!"})
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=8080)
