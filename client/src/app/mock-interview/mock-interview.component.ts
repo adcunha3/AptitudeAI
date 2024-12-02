@@ -10,12 +10,10 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./mock-interview.component.css'],
 })
 export class MockInterviewComponent implements OnInit, AfterViewInit {
-  @ViewChild('recordedVideo') recordVideoElementRef!: ElementRef;
   @ViewChild('video') videoElementRef!: ElementRef;
   @ViewChild('canvas') canvasElementRef!: ElementRef;
 
   videoElement!: HTMLVideoElement;
-  recordVideoElement!: HTMLVideoElement;
   mediaRecorder!: any;
   recordedBlobs!: Blob[];
   isRecording: boolean = false;
@@ -24,6 +22,10 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
   canvasElement!: HTMLCanvasElement;
   ctx!: CanvasRenderingContext2D | null;
   intervalId!: any;
+  eyeContactPercent = 0;
+  bodyLanguagePercent = 0;
+  emotionPercent = 0;
+  overallPercent = 0;
 
   constructor(private videoRecordingService: VideoRecordingService) {}
 
@@ -34,7 +36,6 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
       })
       .then(stream => {
         this.videoElement = this.videoElementRef.nativeElement;
-        this.recordVideoElement = this.recordVideoElementRef.nativeElement;
 
         this.stream = stream;
         this.videoElement.srcObject = this.stream;
@@ -78,14 +79,6 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
     this.stopFrameCapture();
   }
 
-  playRecording() {
-    if (!this.recordedBlobs || !this.recordedBlobs.length) {
-      console.log('cannot play.');
-      return;
-    }
-    this.recordVideoElement.play();
-  }
-
   onDataAvailableEvent() {
     try {
       this.mediaRecorder.ondataavailable = (event: any) => {
@@ -105,8 +98,6 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
           type: 'video/webm'
         });
         this.downloadUrl = window.URL.createObjectURL(videoBuffer);
-        this.recordVideoElement.src = this.downloadUrl;
-
       };
     } catch (error) {
       console.log(error);
@@ -128,10 +119,10 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
         this.videoRecordingService.uploadBase64Image(frameData).subscribe({
           next: (res) => {
             console.log('Upload successful:', res);
-            this.updateProgressBar('eye-contact-bar', 'eye-contact-score', res.eye_contact || 0);
-            this.updateProgressBar('body-language-bar', 'body-language-score', res.body_language || 0);
-            this.updateProgressBar('emotion-bar', 'emotion-score', res.emotion_score || 0);
-            this.updateProgressBar('overall-score-bar', 'overall-score', res.overall_score || 0);
+            this.updateProgressBar('eye-contact-bar', res.eye_contact);
+            this.updateProgressBar('body-contact-bar', res.body_language);
+            this.updateProgressBar('emotion-bar', res.emotion_score);
+            this.updateProgressBar('overall-score-bar', res.overall_score);
           },
           error: (err) => {
             console.error('Upload failed:', err);
@@ -141,15 +132,20 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
     }, 500);
   }
   
-  updateProgressBar(barId: string, scoreId: string, value: number): void {
-    const barElement = document.getElementById(barId);
-    const scoreElement = document.getElementById(scoreId);
-  
-    if (barElement) {
-      barElement.style.width = `${value}%`;
-    }
-    if (scoreElement) {
-      scoreElement.textContent = `${value}%`;
+  updateProgressBar(barId: string, value: number): void {
+    switch (barId) {
+      case 'eye-contact-bar':
+        this.eyeContactPercent = value;
+        break;
+      case 'body-contact-bar':
+        this.bodyLanguagePercent = value;
+        break;
+      case 'emotion-bar':
+        this.emotionPercent = value;
+        break;
+      case 'overall-score-bar':
+        this.overallPercent = value;
+        break;
     }
   }
 
