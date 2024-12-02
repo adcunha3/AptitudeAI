@@ -20,7 +20,16 @@ mongoose.connection.once("open", () => {
 
 // Configure Multer to handle file uploads in memory
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const upload = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+      if (file.mimetype === 'video/webm' || file.mimetype === 'video/webm') {
+        cb(null, true);
+      } else {
+        cb(new Error('Invalid file type'));
+      }
+    },
+  });
 
 // Upload file route
 router.post("/upload", upload.single("file"), async (req, res) => {
