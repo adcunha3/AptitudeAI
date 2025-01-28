@@ -45,7 +45,7 @@ export class AuthService {
             this.token = res.token;
             if (this.token) {
                 this.isAuth.set(true);
-                this.router.navigate(['/profile']);
+                this.router.navigate(['/profile-main']);
                 this.logoutTimer = setTimeout(() => {this.logout()}, res.expiresIn * 10000);
                 const now = new Date();
                 const expiresDate = new Date(now.getTime() + (res.expiresIn * 1000));
