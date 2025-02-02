@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import {ProfileService} from '../../services/profile-service';
+import { Component, OnInit } from '@angular/core';
+import { ProfileService } from '../../services/profile-service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -9,14 +9,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   templateUrl: './profile-main.component.html',
   styleUrl: './profile-main.component.css'
 })
-export class ProfileMainComponent {
+export class ProfileMainComponent implements OnInit {
 
-  constructor(private profileService: ProfileService) {}
-  
-editProfile() {
+  constructor(public profileService: ProfileService) {}
 
-  this.profileService.editProfile();
+  ngOnInit() {
+    this.profileService.getUserProfile('673e4b6d519c1c03238a141b'); // Call getUserProfile without passing userId, it will be fetched from AuthService
+  }
 
-}
-
+  editProfile() {
+    this.profileService.editProfile();
+  }
 }
