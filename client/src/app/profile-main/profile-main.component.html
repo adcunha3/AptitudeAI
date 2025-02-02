@@ -1,13 +1,14 @@
 <div class="profile-container">
-    <img [src]="profileService.image()" alt="Profile Image">
-
+    <img [src]="profileService.image()" alt="Profile Image" />
+  
     <div class="profile-info">
-        <p><strong>Username:</strong> {{ profileService.username()  'N/A' }}</p>
-        <p><strong>Role:</strong> {{ profileService.role()  'N/A' }}</p>
-        <p><strong>Email:</strong> {{ profileService.email()  'N/A' }}</p>
-        <p><strong>Bio:</strong> {{ profileService.bio()  'N/A' }}</p>
-        <p><strong>Interests:</strong> {{ profileService.interests() || 'N/A' }}</p>
+      <p><strong>Username:</strong> {{ profileService.username() || 'N/A' }}</p>
+      <p><strong>Role:</strong> {{ profileService.role() || 'N/A' }}</p>
+      <p><strong>Email:</strong> {{ profileService.email() || 'N/A' }}</p>
+      <p><strong>Bio:</strong> {{ profileService.bio() || 'N/A' }}</p>
+      <p><strong>Interests:</strong> {{ profileService.interests() || 'N/A' }}</p>
     </div>
-</div>
-
-<li><button (click)="editProfile()">Edit Profile</button></li>
+  </div>
+  
+  <li><button (click)="editProfile()">Edit Profile</button></li>
+  
