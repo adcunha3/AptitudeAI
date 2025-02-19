@@ -7,6 +7,7 @@ import { LoginModel } from "../models/login-model";
 @Injectable({ providedIn: "root" })
 export class AuthService {
     private token = '';
+    private userId = '';
     private isAuth = signal<boolean>(false);
     private logoutTimer: any = null;
 
@@ -18,6 +19,10 @@ export class AuthService {
 
     getToken(): string {
         return this.token;
+    }
+
+    getUserId(): string {
+        return this.userId;
     }
 
     signupUser(email: string, username: string, password: string, role: string) {
@@ -35,7 +40,7 @@ export class AuthService {
     loginUser(username: string, password: string) {
         const loginData: LoginModel = { username, password };
         this.http
-        .post<{ token: string; expiresIn: number }>(
+        .post<{ token: string; expiresIn: number; userId: string }>(
             'http://localhost:3000/api/auth/signin',
             loginData,
             { headers: { 'Content-Type': 'application/json' } }
@@ -43,13 +48,14 @@ export class AuthService {
         .subscribe({
             next: (res) => {
             this.token = res.token;
+            this.userId = res.userId
             if (this.token) {
                 this.isAuth.set(true);
                 this.router.navigate(['/profile']);
                 this.logoutTimer = setTimeout(() => {this.logout()}, res.expiresIn * 10000);
                 const now = new Date();
                 const expiresDate = new Date(now.getTime() + (res.expiresIn * 1000));
-                this.storeLoginDetails(this.token, expiresDate);
+                this.storeLoginDetails(this.token, expiresDate, this.userId);
             } else {
                 console.error('Token is missing or invalid');
             }
@@ -81,9 +87,10 @@ export class AuthService {
         });
     }
 
-    storeLoginDetails(token: string, expirationDate: Date){
+    storeLoginDetails(token: string, expirationDate: Date, userId: string){
         localStorage.setItem('token', token);
         localStorage.setItem('expiresIn', expirationDate.toISOString());
+        localStorage.setItem('userId', userId);
     }
 
     clearLoginDetails(){

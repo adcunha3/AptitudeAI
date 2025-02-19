@@ -20,8 +20,11 @@
     "@angular/router": "^18.2.0",
     "@ffmpeg/ffmpeg": "^0.12.10",
     "@ffmpeg/util": "^0.12.1",
+    "@ngx-translate/core": "^15.0.0",
     "bootstrap": "^5.3.3",
     "rxjs": "~7.8.0",
+    "stream-chat": "^8.56.1",
+    "stream-chat-angular": "^5.12.5",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
   },
