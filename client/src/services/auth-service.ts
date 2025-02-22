@@ -80,11 +80,11 @@ export class AuthService {
       .subscribe({
         next: (res) => {
           console.log('User logged out:', res);
-          this.token.set(""); // Reset token signal
-          this.isAuth.set(false); // Update authentication state
+          this.token.set("");
+          this.isAuth.set(false);
           this.router.navigate(['/']);
-          clearTimeout(this.logoutTimer); // Clear logout timer
-          this.clearLoginDetails(); // Clear stored login details
+          clearTimeout(this.logoutTimer);
+          this.clearLoginDetails();
         },
         error: (err) => console.error('Logout failed:', err),
       });
