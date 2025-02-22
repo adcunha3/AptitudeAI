@@ -14,7 +14,31 @@ export class ProfileMainComponent implements OnInit {
   constructor(public profileService: ProfileService) {}
 
   ngOnInit() {
-    this.profileService.getUserProfile('673e4b6d519c1c03238a141b'); // Call getUserProfile without passing userId, it will be fetched from AuthService
+
+    const storedToken = localStorage.getItem('token');
+
+    if (!storedToken) {
+      console.error('No token found. User is not logged in.');
+      return;
+    }
+  
+    try {
+      const payload = JSON.parse(atob(storedToken.split('.')[1]));
+      console.log('Decoded Token Payload:', payload);
+  
+      const userId = payload?.id; 
+  
+      if (!userId) {
+        console.error('User ID is missing in token.');
+        return;
+      }
+  
+      this.profileService.getUserProfile(userId);
+    } catch (error) {
+      console.error('Error decoding token:', error);
+    }
+    
+
   }
 
   editProfile() {

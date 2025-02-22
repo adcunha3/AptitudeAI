@@ -29,7 +29,7 @@ export class ProfileService {
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    return this.http.get<any>('http://localhost:3000/api/profile/${userId}', { headers }).subscribe(
+    return this.http.get<any>(`http://localhost:3000/api/profile/${userId}`, { headers }).subscribe(
       (data) => {
         this.username.set(data.username || 'N/A');
         this.role.set(data.role || 'N/A');
