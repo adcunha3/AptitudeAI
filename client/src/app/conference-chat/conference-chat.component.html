@@ -16,4 +16,9 @@
         <stream-message-list></stream-message-list>
         <stream-message-input></stream-message-input>
     </div>
+
+    <button class="start-call-button" (click)="startCall()">Start Call</button>
+
+    <ng-container *ngIf="videoCallService.callId()!">
+        <app-call [call]="videoCallService.call()!"></app-call>    </ng-container>
 </div>
