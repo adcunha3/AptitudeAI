@@ -1,0 +1,26 @@
+<div class="profile-container">
+  <!-- Profile Card -->
+  <div class="profile-card">
+    <!-- Profile Image -->
+    <div class="profile-header">
+      <img 
+        [src]="profileService.image || '/assets/default-profile.png'" 
+        alt="Profile Image" 
+        class="profile-image"
+        onerror="this.src='/assets/default-profile.png'"
+      />
+      <h2 class="username">{{ profileService.username() }}</h2>
+      <p class="role">{{ profileService.role() }}</p>
+    </div>
+
+    <!-- Profile Info -->
+    <div class="profile-info">
+      <p><strong>Email:</strong> {{ profileService.email() }}</p>
+      <p><strong>Bio:</strong> {{ profileService.bio() }}</p>
+      <p><strong>Interests:</strong> {{ profileService.interests() }}</p>
+    </div>
+
+    <!-- Edit Profile Button -->
+    <button class="edit-btn" (click)="editProfile()">Edit Profile</button>
+  </div>
+</div>
