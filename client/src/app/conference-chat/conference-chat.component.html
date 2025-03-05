@@ -1,24 +1,48 @@
-<!-- <div id="root">
-    <stream-channel-list></stream-channel-list>
-    <stream-message-list></stream-message-list>
-    <stream-notification-list></stream-notification-list>
-    <stream-message-input></stream-message-input>
-        <stream-thread name="thread">
-        <stream-message-list name="thread"></stream-message-list>
-        <stream-message-input name="thread"></stream-message-input>
-    </stream-thread>
-</div> -->
-
 <div id="root">
     <stream-channel-list></stream-channel-list>
-        
+
     <div class="chat-container">
         <stream-message-list></stream-message-list>
         <stream-message-input></stream-message-input>
     </div>
 
+    <!-- Search User Input -->
+    <div class="search-container">
+        <input 
+            type="text" 
+            [(ngModel)]="searchUserId" 
+            placeholder="Enter user ID"
+        />
+        <button (click)="searchUser()">Search User</button>
+    </div>
+
+    <!-- User Search Result -->
+    <div *ngIf="searchedUser">
+        <p>User found: {{ searchedUser.username }} ({{ searchedUser.email }})</p>
+        <button (click)="addParticipant()">Add to Call</button>
+    </div>
+
+    <!-- User Not Found -->
+    <div *ngIf="searchedUser === null && searchUserId">
+        <p>User not found. Please try again.</p>
+    </div>
+
+    <!-- Added Participants List -->
+    <div *ngIf="addedParticipants.length > 0">
+        <h3>Participants:</h3>
+        <ul>
+            <li *ngFor="let participant of addedParticipants">
+                {{ participant.username }} ({{ participant.id }})
+            </li>
+        </ul>
+        <button (click)="startCall()">Start Call</button>
+    </div>
+
+    <!-- Button to Start Call -->
     <button class="start-call-button" (click)="startCall()">Start Call</button>
 
-    <ng-container *ngIf="videoCallService.callId()!">
-        <app-call [call]="videoCallService.call()!"></app-call>    </ng-container>
+    <!-- Call Component, shown if callId is set and call is defined -->
+    <ng-container *ngIf="videoCallService.call()">
+        <app-call [call]="videoCallService.call()!"></app-call>
+    </ng-container>
 </div>
