@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ProfileService } from '../../services/profile-service';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,28 +11,71 @@ import { CommonModule } from '@angular/common';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent {
-  profileForm: FormGroup;
+export class ProfileComponent implements OnInit {
+  profileForm!: FormGroup;
+  selectedFile: File | null = null;
+  previewUrl: string = '';
 
-  constructor(private fb: FormBuilder) {
-    // Initialize the form with controls
+  constructor(
+    private fb: FormBuilder,
+    private profileService: ProfileService,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
     this.profileForm = this.fb.group({
-      name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      name: [{ value: this.profileService.username()}],
+      email: [{ value: this.profileService.email(), disabled: true }],
+      role: [this.profileService.role(), Validators.required],
+      interests: [this.profileService.interests()],
+      bio: [this.profileService.bio()],
       profileImage: ['']
     });
+  
+    this.profileForm.valueChanges.subscribe(() => {
+      this.profileForm.markAsDirty();
+    });
+  
+    this.previewUrl = this.profileService.image() || 'assets/default-profile.png';
   }
+  
 
-  // Handle form submission
-  onSaveProfile() {
-    console.log('Form Submitted:', this.profileForm.value);
-    // Add logic to handle form data (e.g., send to a server)
-  }
-
-  // Handle file input change
   onFileSelected(event: any) {
     const file = event.target.files[0];
-    console.log('File selected:', file);
-    // Handle file selection logic here
+    if (file) {
+      this.selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.previewUrl = e.target.result;
+        this.profileForm.markAsDirty();
+      };
+      reader.readAsDataURL(file);
+    }
   }
+
+  onSaveProfile() {
+    console.log("Save button clicked!");
+  
+    if (!this.profileForm.dirty) {
+      alert("No changes detected.");
+      return;
+    }
+  
+    const updatedProfile = this.profileForm.value;
+    console.log("Form Data:", updatedProfile); 
+  
+    this.profileService.updateUserProfile(updatedProfile).subscribe({
+      next: (res) => {
+        console.log("Profile updated:", res);
+        alert("Profile updated successfully!");
+        this.router.navigate(['/profile-main']);
+      },
+      error: (err) => {
+        console.error("Error updating profile:", err);
+        alert("Failed to update profile. Check console for details.");
+      }
+    });
+  }
+  
+  
 }
