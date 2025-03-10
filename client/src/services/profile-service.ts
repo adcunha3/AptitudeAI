@@ -58,4 +58,21 @@ export class ProfileService {
 
     return token;
   }
+
+  updateUserProfile(updatedProfile: any) {
+    const userId = this.authService.getLocalStorageData()?.userId;
+    const token = this.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  
+    return this.http.put(`http://localhost:3000/api/profile/${userId}`, updatedProfile, { headers });
+  }
+  
+  uploadProfilePicture(formData: FormData) {
+    const userId = localStorage.getItem('userId');
+    const token = this.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  
+    return this.http.post(`http://localhost:3000/api/profile/${userId}/upload`, formData, { headers });
+  }
+  
 }

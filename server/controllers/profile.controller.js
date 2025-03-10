@@ -17,15 +17,19 @@ exports.getProfile = async (req, res) => {
 exports.updateProfile = async (req, res) => {
     try {
         const updatedData = {
-            bio: req.body.bio,
-            interests: req.body.interests
+            username: req.body.username, // ✅ Allow username change
+            role: req.body.role || "User",
+            bio: req.body.bio || "No bio available",
+            interests: req.body.interests || "No interests listed",
+            profilePicture: req.body.profilePicture || "assets/default-profile.png"
         };
 
-        const user = await User.findOneAndUpdate(
-            { _id: new mongoose.Types.ObjectId(req.params.id) }, 
-            updatedData, 
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            { $set: updatedData },
             { new: true }
         ).select('-password');
+        
 
         if (!user) {
             return res.status(404).send({ message: "User not found" });
