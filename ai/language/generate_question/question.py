@@ -7,7 +7,7 @@ API_KEY = "vmrGwSEmWGVyFmIfG5cvRXfKCwShdFzCLEzNEueA"  # Replace with your real k
 co = cohere.Client(API_KEY)
 # Example interview response
 def evaluate_response(response):
-    """Analyzes interview responses with structured feedback."""
+    """Analyzes an interview response, provides feedback, an improved example, and a follow-up question."""
     
     prompt = f"""
     Evaluate the following interview response: "{response}".
@@ -19,15 +19,17 @@ def evaluate_response(response):
     - Technical Depth (Does it show expertise?)
 
     **2. Generate a complete and well-structured example response** that fully improves on the given answer. 
-    Ensure the example response is clear, detailed, and **fully written** before stopping.
+    Ensure the example response is clear, detailed, concise and **fully written** before stopping.
 
-    **End the response properly after generating the example. Do not leave it incomplete.**
+    **3. Generate a relevant follow-up question** that builds upon the candidate's response to explore their skills further.
+
+    **End after generating the follow-up question. Do not generate additional content.**
     """
     
     cohere_response = co.generate(
         model="command-r-plus",
         prompt=prompt,
-        max_tokens=250
+        max_tokens=350
     )
 
     return cohere_response.generations[0].text
