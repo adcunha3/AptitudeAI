@@ -89,11 +89,6 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
       this.mediaRecorder.ondataavailable = this.onDataAvailableEvent.bind(this);
       this.mediaRecorder.onstop = this.onStopRecordingEvent.bind(this);
 
-      // Handle any errors that occur during the recording process
-      this.mediaRecorder.onerror = (event) => {
-        console.error("MediaRecorder error:", event.error);
-      };
-
       // Check if the MediaRecorder is in an invalid state
       if (this.mediaRecorder.state === "inactive") {
         // Start recording if it's in the inactive state
