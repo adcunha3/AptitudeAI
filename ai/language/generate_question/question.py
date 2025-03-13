@@ -1,9 +1,11 @@
 import cohere
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Initialize Cohere client
-
-API_KEY = "vmrGwSEmWGVyFmIfG5cvRXfKCwShdFzCLEzNEueA"  # Replace with your real key
+API_KEY = os.getenv("CO_API_KEY")
 co = cohere.Client(API_KEY)
 # Example interview response
 def evaluate_response(response):
@@ -35,6 +37,6 @@ def evaluate_response(response):
     return cohere_response.generations[0].text
 
 # Example usage
-user_response = "My name is Adam and I and a software engineer. I have experience in AI and worked on multiple machine learning projects."
+user_response = "My name is Adam and I and a software engineer. I have experience in full stack development and worked on multiple projects."
 feedback = evaluate_response(user_response)
 print(feedback)
