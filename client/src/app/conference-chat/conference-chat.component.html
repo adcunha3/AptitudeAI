@@ -1,4 +1,15 @@
 <div id="root">
+    <!-- Search section -->
+    <div class="search-container">
+        <input [(ngModel)]="searchUserId" placeholder="Enter user ID" />
+        <button (click)="searchUser()">Search</button>
+    </div>
+
+    <!-- Display found user -->
+    <div *ngIf="searchedUser">
+        <p>Found User: {{ searchedUser.username }}</p>
+    </div>
+
     <stream-channel-list></stream-channel-list>
 
     <div class="chat-container">
