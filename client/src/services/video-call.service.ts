@@ -46,33 +46,6 @@ export class VideoCallService {
       this.callId.set(callId);
     }
 
-    searchUser(userId: string) {
-      const token = this.authService.getToken();
-      this.http.get<any>(`http://localhost:3000/api/profile/${userId}`, {
-          headers: {
-              Authorization: `Bearer ${token}`
-          }
-      }).subscribe({
-          next: (user) => {
-              if (user && user._id) {
-                  this.selectedUser.set({
-                      id: user._id,
-                      username: user.username,
-                      email: user.email,
-                  });
-                  console.log('User found and set:', this.selectedUser());
-              } else {
-                  console.warn('User not found');
-                  this.selectedUser.set(null);
-              }
-          },
-          error: (error) => {
-              console.error('Error fetching user:', error);
-              this.selectedUser.set(null);
-          },
-      });
-  }
-
     getSelectedUser() {
         return this.selectedUser();
     }

@@ -71,42 +71,9 @@ export class ConferenceChatComponent implements OnInit {
     }
   }
 
-  searchUser() {
-    if (this.searchUserId.trim()) {
-      this.videoCallService.searchUser(this.searchUserId);
-    }
-  }
-
-  addParticipant() {
-    const user = this.videoCallService.getSelectedUser();
-    if (user) {
-      const alreadyAdded = this.addedParticipants.some((p) => p.id === user.id);
-      if (!alreadyAdded) {
-        this.addedParticipants.push({ id: user.id, username: user.username });
-      } else {
-        console.warn("User already added to the call");
-      }
-    }
-  }
-
   startCall() {
-    const participantIds = this.addedParticipants.map(p => p.id);
-    if (participantIds.length > 0) {
-      const channelId = this.channelService.activeChannel?.id || `group-call-${Date.now()}`;
-      this.videoCallService.setCallId(channelId);
-
-      this.channelService.init({
-        type: 'messaging',
-        id: channelId,
-        members: participantIds
-      });
-      console.log("Call started with participants:", participantIds);
-    } else {
-      console.warn("No participants added to the call");
-    }
+    const channelId = this.channelService.activeChannel?.id;
+     this.videoCallService.setCallId(channelId);
   }
 
-  get searchedUser() {
-    return this.videoCallService.getSelectedUser();
-  }
 }
