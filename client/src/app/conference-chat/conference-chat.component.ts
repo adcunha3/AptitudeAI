@@ -61,7 +61,7 @@ export class ConferenceChatComponent implements OnInit {
   
       // Initialize channel service without filters to load all channels
       await this.channelService.init(
-        { type: 'messaging' }, // Query all channels of type 'messaging'
+        { type: "messaging", members: { $in: [userId] } },
         { name: 1 }, // Sort by name (optional)
         { limit: 30 } // Set a limit of 30 channels
       );
