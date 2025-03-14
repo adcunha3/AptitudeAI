@@ -53,25 +53,47 @@ export class ConferenceChatComponent implements OnInit {
   }
 
   async ngOnInit() {
-    if (!this.chatService.chatClient.user) {
-      console.error("Stream Chat client is not connected yet. Waiting...");
-      return;
-    }
-
     try {
-      const channel = this.chatService.chatClient.channel('messaging', 'talking-about-angular', {
-        image: "",
-        name: ""
+      const userId = this.authService.getUserId();
+  
+      // Reset the service before querying channels
+      this.channelService.reset();
+  
+      // Initialize channel service without filters to load all channels
+      await this.channelService.init(
+        { type: 'messaging' }, // Query all channels of type 'messaging'
+        { name: 1 }, // Sort by name (optional)
+        { limit: 30 } // Set a limit of 30 channels
+      );
+  
+      // Log the channels to see what is returned
+      this.channelService.channels$.subscribe((channels) => {
+        console.log('Loaded Channels:', channels);
       });
-      await channel.create();
-      this.channelService.init({
-        type: 'messaging',
-        id: { $eq: 'talking-about-angular' }
+  
+      // Monitor the channel query state to debug if needed
+      this.channelService.channelQueryState$.subscribe((state) => {
+        console.log('Channel Query State:', state);
       });
-      console.log("Channel successfully created!");
+  
+      // Optionally, load more channels if needed
+      await this.loadMoreChannels();
+  
     } catch (error) {
-      console.error("Error creating channel:", error);
+      console.error('Error initializing channels:', error);
     }
+  }
+  
+  // Load more channels if necessary
+  async loadMoreChannels() {
+    this.channelService.hasMoreChannels$.subscribe(async (hasMoreChannels) => {
+      if (hasMoreChannels) {
+        console.log('Loading more channels...');
+        await this.channelService.loadMoreChannels();
+      } else {
+        console.log('No more channels to load');
+      }
+    });
   }
 
   // Search for a user by ID and create a chat channel with them

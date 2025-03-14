@@ -1,27 +1,29 @@
 <div id="root">
-    <!-- Search section -->
-    <div class="search-container">
-        <input [(ngModel)]="searchUserId" placeholder="Enter user ID" />
-        <button (click)="searchUser()">Search</button>
-    </div>
-
-    <!-- Display found user -->
-    <div *ngIf="searchedUser">
-        <p>Found User: {{ searchedUser.username }}</p>
-    </div>
-
     <stream-channel-list></stream-channel-list>
-
-    <div class="chat-container">
+    <stream-channel>
+        <stream-channel-header></stream-channel-header>
         <stream-message-list></stream-message-list>
         <stream-message-input></stream-message-input>
-    </div>
+    </stream-channel>
+
 
     <!-- Button to Start Call -->
-    <button class="start-call-button" (click)="startCall()">Start Call</button>
-
+    <div class="start-call-container">
+        <button class="start-call-button" (click)="startCall()">Start Call</button>
+    </div>
     <!-- Call Component, shown if callId is set and call is defined -->
     <ng-container *ngIf="videoCallService.call()">
         <app-call [call]="videoCallService.call()!"></app-call>
     </ng-container>
+
+        <!-- Search section -->
+        <div class="search-container">
+            <input [(ngModel)]="searchUserId" placeholder="Enter user ID" />
+            <button (click)="searchUser()">Search</button>
+        </div>
+    
+        <!-- Display found user -->
+        <div *ngIf="searchedUser">
+            <p>Found User: {{ searchedUser.username }}</p>
+        </div>
 </div>
