@@ -16,6 +16,9 @@
   height: 600px;
   padding: 0;
 }
+.question-text {
+  align-items: center;
+}
 
 .video-feedback-container {
   display: flex;

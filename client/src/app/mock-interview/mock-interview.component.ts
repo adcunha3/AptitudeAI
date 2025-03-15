@@ -1,6 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit, AfterViewInit } from '@angular/core';
 import { VideoRecordingService } from '../../services/video-recording.service';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-mock-interview',
@@ -17,6 +18,10 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
   mediaRecorder!: any;
   recordedBlobs!: Blob[];
   isRecording: boolean = false;
+  question: string = "Loading question..."; // Placeholder for AI-generated question
+  userResponse: string = "";  // Stores user response
+  aiFeedback: string = "";  // Stores AI feedback
+  exampleResponse: string = "";
   downloadUrl!: string;
   stream!: MediaStream;
   canvasElement!: HTMLCanvasElement;
@@ -27,7 +32,7 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
   emotionPercent = 0;
   overallPercent = 0;
 
-  constructor(private videoRecordingService: VideoRecordingService) {}
+  constructor(private videoRecordingService: VideoRecordingService, private http: HttpClient) {}
 
   ngOnInit(): void {
     navigator.mediaDevices
@@ -43,11 +48,34 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
       .catch(err => {
         console.error('Error accessing webcam:', err);
       });
+    this.fetchQuestion();
   }
 
   ngAfterViewInit() {
     this.canvasElement = this.canvasElementRef.nativeElement;
     this.ctx = this.canvasElement.getContext('2d');
+  }
+
+  /** Fetches the AI-generated interview question */
+  fetchQuestion() {
+    this.http.get<{ question: string }>("http://localhost:8080/get_question").subscribe({
+      next: (res) => { this.question = res.question; },
+      error: (err) => { console.error("Error fetching question:", err); }
+    });
+  }
+
+  /** Submits user response to AI backend for evaluation */
+  submitResponse() {
+    this.http.post<{ analysis: string, example_response: string, follow_up: string }>("http://localhost:8080/evaluate-response", { response: this.userResponse })
+      .subscribe({
+        next: (res) => { this.aiFeedback = res.analysis; this.exampleResponse = res.example_response; this.question = res.follow_up;
+         },
+        error: (err) => { console.error("Error fetching feedback:", err); }
+      });
+  }
+  /** Handles user text input */
+  handleResponseInput(event: any) {
+    this.userResponse = event.target.value;
   }
 
   startRecording() {

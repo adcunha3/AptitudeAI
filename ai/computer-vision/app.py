@@ -4,6 +4,18 @@ import base64
 import numpy as np
 from test import process_frame
 from flask_cors import CORS
+import sys
+import os
+
+# Get the absolute path of the project root
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, project_root)
+
+# Now import AI function
+from language.generate_question.question import evaluate_response
+from language.generate_question.question import FIRST_QUESTION
+from language.generate_question.question import generate_follow_up_question
+from language.generate_question.question import generate_example_response
 
 app = Flask(__name__)
 
@@ -62,6 +74,25 @@ def process_frame_route():
         app.logger.exception("An unexpected error occurred.")
         return jsonify({'error': 'An unexpected error occurred. Please try again later.'}), 500
     
+@app.route("/get_question", methods=["GET"])
+def get_question():
+    return jsonify({"question": FIRST_QUESTION})
+
+
+@app.route("/evaluate-response", methods=["POST"])
+def evaluate():
+    data = request.get_json()  # Get JSON from frontend
+    user_response = data.get("response")  # Extract user's response
+
+    if not user_response:
+        return jsonify({"error": "No response provided"}), 400
+
+    feedback = evaluate_response(user_response)  # Call AI function
+    example_response = generate_example_response(user_response)
+    follow_up_question = generate_follow_up_question(user_response)
+
+    return jsonify({"analysis": feedback, "example_response": example_response, "follow_up": follow_up_question})  # Return AI feedback to frontend
+
 @app.route('/test-cors', methods=['GET', 'OPTIONS'])
 def test_cors():
     return jsonify({"message": "CORS is working!"})
