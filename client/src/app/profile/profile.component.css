@@ -1,124 +1,139 @@
-/* General Reset */
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
+
+.edit-profile-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: "Arial", sans-serif;
+}
+
+
+.cover-photo {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, #6e48aa, #9d50bb);
+  position: relative;
+}
+
+
+.profile-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid white;
+  object-fit: cover;
+  position: absolute;
+  top: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+
+.profile-header {
+  text-align: center;
+  margin-top: 80px;
+}
+
+.username {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #333;
+}
+
+.role {
+  font-size: 16px;
+  color: #777;
+  font-style: italic;
+}
+
+
+.profile-details {
+  text-align: left;
+  padding: 20px;
+  font-size: 16px;
+}
+
+.profile-details p {
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.profile-details p strong {
+  color: #4b0082;
+}
+
+
+.profile-form {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+textarea {
+  resize: none;
+  height: 80px;
+}
+
+.profile-image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.profile-image-preview img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px dashed #ccc;
+  object-fit: cover;
+}
+
+
+.save-btn {
+  display: block;
+  width: fit-content;
+  margin: 20px auto;
+  background-color: #4b0082;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease-in-out;
+}
+
+.save-btn:hover {
+  background-color: #360063;
+}
+
+
+@media (max-width: 768px) {
+  .edit-profile-container {
+      width: 100%;
   }
-  
-  /* Profile Container */
-  .profile-container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
+
+  .profile-image {
+      width: 100px;
+      height: 100px;
+      top: 120px;
   }
-  
-  /* Header Section */
-  .profile-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-  }
-  
-  .profile-header h1 {
-    font-size: 24px;
-    color: #4a148c;
-    margin: 0;
-  }
-  
-  .profile-header .profile-link {
-    text-decoration: none;
-    font-size: 16px;
-    color: #4a148c;
-    font-weight: bold;
-  }
-  
-  /* Profile Card */
-  .profile-card {
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .profile-card h2 {
-    font-size: 20px;
-    margin-bottom: 20px;
-    color: #4a148c;
-  }
-  
-  /* Form Styles */
-  .profile-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .form-group {
-    text-align: left;
-  }
-  
-  .form-group label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 5px;
-    color: #555;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    transition: border-color 0.3s ease;
-  }
-  
-  .form-group input:focus {
-    border-color: #4a148c;
-    outline: none;
-  }
-  
-  /* Profile Image Preview */
-  .profile-image-preview {
-    margin: 10px auto;
-    width: 150px;
-    height: 150px;
-    border: 2px dashed #ccc;
-    border-radius: 50%;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .profile-image-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-  }
-  
-  /* Save Button */
-  .btn-save {
-    background-color: #4a148c;
-    color: #fff;
-    font-size: 16px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn-save:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-  
-  .btn-save:hover:not(:disabled) {
-    background-color: #6a1b9a;
-  }
-  
+}

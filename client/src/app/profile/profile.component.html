@@ -1,80 +1,46 @@
-<div class="profile-container">
+<div class="edit-profile-container">
+
+  <div class="cover-photo"></div>
+
+
   <div class="profile-header">
-    <h1>Your Profile</h1>
-    <a href="#" class="profile-link">Back</a>
+    <img 
+      [src]="profileService.image || '/assets/default-profile.png'" 
+      alt="Profile Image" 
+      class="profile-image"
+      onerror="this.src='/assets/default-profile.png'"
+    />
+    <h2 class="username">{{ profileService.username() }}</h2>
+    <p class="role">{{ profileService.role() }}</p>
   </div>
 
-  <div class="profile-card">
-    <h2>Edit Profile</h2>
-    <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()" class="profile-form">
-      <div class="form-group">
-        <label for="username">Name</label>
-        <input
-          id="username"
-          formControlName="username"
-          type="text"
-          placeholder="Enter your name"
-        />
-      </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          id="email"
-          formControlName="email"
-          type="email"
-          placeholder="Enter your email"
-        />
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          id="password"
-          formControlName="password"
-          type="password"
-          placeholder="Enter a new password"
-        />
-      </div>
-      <div class="form-group">
-        <label for="role">Role</label>
-        <input
-          id="role"
-          formControlName="role"
-          type="text"
-          placeholder="Enter your role (e.g., Student, Mentor)"
-        />
-      </div>
-      <div class="form-group">
-        <label for="interests">Interests</label>
-        <input
-          id="interests"
-          formControlName="interests"
-          type="text"
-          placeholder="Enter your interests"
-        />
-      </div>
-      <div class="form-group">
-        <label for="bio">Bio</label>
-        <textarea
-          id="bio"
-          formControlName="bio"
-          placeholder="Tell us about yourself"
-        ></textarea>
-      </div>
-      <div class="form-group">
-        <label for="profilePicture">Profile Picture</label>
-        <input
-          id="profilePicture"
-          type="file"
-          (change)="onFileSelected($event)"
-        />
-      </div>
-      <div class="profile-image-preview">
-        <img
-          [src]="profileForm.get('profilePicture')?.value || 'https://via.placeholder.com/150'"
-          alt="Profile Preview"
-        />
-      </div>
-      <button type="submit">Save</button>
-    </form>
-  </div>
+
+  <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()" class="profile-form">
+
+    <div class="profile-details">
+      <p><strong>Email:</strong> {{ profileService.email() }}</p>
+    </div>
+
+
+    <div class="form-group">
+      <label for="bio">Bio</label>
+      <textarea id="bio" formControlName="bio" placeholder="Tell us about yourself"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="interests">Interests</label>
+      <input id="interests" formControlName="interests" type="text" placeholder="Enter your interests" />
+    </div>
+
+    <div class="form-group">
+      <label for="profilePicture">Profile Picture</label>
+      <input id="profilePicture" type="file" (change)="onFileSelected($event)" />
+    </div>
+
+    <div class="profile-image-preview">
+      <img [src]="profileForm.get('profilePicture')?.value || '/assets/default-profile.png'" alt="Profile Preview" />
+    </div>
+
+    <button type="submit" class="save-btn">Save Changes</button>
+  </form>
 </div>
