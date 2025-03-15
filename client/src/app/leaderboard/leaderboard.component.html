@@ -1,0 +1,22 @@
+<div class="leaderboard-section">
+    <h2 class="leaderboard-title">Leaderboard</h2>
+
+    <div class="leaderboard-table-container">
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Username</th>
+                    <th>Average Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of leaderboard; let i = index">
+                    <td class="rank">{{ i + 1 }}</td>
+                    <td class="username">{{ user.username }}</td>
+                    <td class="average-score">{{ user.averageScore }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
