@@ -38,6 +38,11 @@
             </div>
             <span>{{ overallPercent }}%</span>
           </div>
+          <div class="response-container">
+            <h3>Type Your Response</h3>
+            <textarea class="response-box" placeholder="Type your response..." (input)="handleResponseInput($event)"></textarea>
+            <button class="btn btn-success" (click)="submitResponse()">Submit Response</button>
+          </div>
           <div class="ai-feedback">
             <h4>Feedback</h4>
             <p>{{ aiFeedback }}</p>
@@ -48,11 +53,6 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="response-container">
-      <h3>Type Your Response</h3>
-      <textarea class="response-box" placeholder="Type your response..." (input)="handleResponseInput($event)"></textarea>
-      <button class="btn btn-success" (click)="submitResponse()">Submit Response</button>
     </div>
     <div class="recording-button-container">
         <button class="btn btn-primary btn-lg" *ngIf="!isRecording" (click)="startRecording()">Start Recording</button>
