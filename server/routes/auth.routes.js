@@ -19,7 +19,8 @@ module.exports = function(app) {
     app.post("/api/auth/signout", controller.signout);
 
     // Profile Routes
-    app.get("/api/profile/:id", [verifyToken.checkToken], profileController.getProfile); 
+    app.get("/api/profile/:id", [verifyToken.checkToken], profileController.getProfile);
+    app.get("/api/profiles", [verifyToken.checkToken], profileController.getAllProfiles); 
     app.put("/api/profile/:id", [verifyToken.checkToken], profileController.updateProfile); 
 
     // Leaderboard Routes
