@@ -1,148 +1,139 @@
-/* General Styles */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f8f9fa;
-    text-align: center;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .landing-container {
-    width: 80%;
-    margin: auto;
-    padding: 20px;
-    flex-grow: 1; /* Ensures content expands properly */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-  
-  .section-title {
-    font-size: 2em;
-    color: #4b0082;
-    margin-bottom: 20px;
-  }
-  
-  .section-divider {
-    width: 50%;
-    height: 3px;
-    background-color: #4b0082;
-    margin: 30px auto;
-  }
-  
-  /* Hero Section */
-  .hero-section {
-    background-color: #4b0082;
-    color: white;
-    padding: 50px;
-    border-radius: 12px;
-  }
-  
-  .hero-title {
-    font-size: 2.5em;
-    font-weight: bold;
-  }
-  
-  .hero-subtitle {
-    font-size: 1.2em;
-    margin: 20px 0;
-  }
-  
-  .cta-buttons button {
-    padding: 10px 20px;
-    margin: 10px;
-    font-size: 1em;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .btn-primary {
-    background-color: #ffcc00;
-    color: #4b0082;
-  }
-  
-  .btn-secondary {
-    background-color: white;
-    color: #4b0082;
-  }
-  
-  /* Features Section */
-  .features-section {
-    background: white;
-    padding: 40px;
-    border-radius: 12px;
-  }
-  
-  .features {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-  }
-  
-  .feature {
-    width: 45%;
-    margin-bottom: 20px;
-    padding: 15px;
-    background: #e9ecef;
-    border-radius: 8px;
-  }
-  
-  /* Team Section */
-  .team-section {
-    padding: 40px;
-    background-color: #ffffff;
-  }
-  
-  .team-members {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  
-  .team-member {
-    background: #f1f1f1;
-    padding: 20px;
-    border-radius: 10px;
-    width: 200px;
-  }
-  
-  .team-member img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-  }
-  
-  /* FAQ Section */
-  .faq-section {
-    padding: 40px;
-    background: #f8f9fa;
-    margin-bottom: 0; /* Remove extra space */
-  }
-  
-  .faq-item {
-    margin-bottom: 20px;
-  }
-  
-  .faq-question {
-    font-weight: bold;
-    font-size: 1.2em;
-  }
-  
-  .faq-answer {
-    font-size: 1em;
-    color: #555;
-  }
-  
-  /* Remove extra bottom spacing */
-  .footer {
-    margin-top: auto;
-    padding: 10px;
-    background-color: #4b0082;
-    color: white;
-  }
-  
+  font-family: 'Poppins', sans-serif;
+  background-color: #f8f8f8;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  padding: 80px 20px;
+  border-radius: 12px;
+}
+
+.hero-section .section-title {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.hero-section .highlight {
+  color: #ffdd57;
+}
+
+.description-box {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  border-radius: 10px;
+  margin: 0 auto;
+  max-width: 800px;
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.cta-btn {
+  background-color: #ffdd57;
+  color: #333;
+  padding: 12px 24px;
+  border-radius: 6px;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+}
+
+.cta-btn:hover {
+  background-color: #ffd700;
+}
+
+.section-divider {
+  width: 60px;
+  height: 4px;
+  background-color: #ffdd57;
+  margin: 30px auto;
+}
+
+.team-section {
+  padding: 60px 20px;
+}
+
+.team-section .section-title {
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+
+.team-members {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.team-member {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 200px;
+  transition: transform 0.3s ease;
+}
+
+.team-member:hover {
+  transform: scale(1.05);
+}
+
+.team-member img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #6200ea;
+}
+
+.team-member h3 {
+  font-size: 18px;
+  margin-top: 10px;
+  color: #4b0082;
+}
+
+.team-member p {
+  font-size: 14px;
+  color: #666;
+}
+
+.faq-section {
+  padding: 60px 20px;
+  background: #fff;
+  border-radius: 10px;
+}
+
+.faq-section .section-title {
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+
+.faq-item {
+  background: #f4f4f4;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.faq-question {
+  font-weight: bold;
+  color: #4b0082;
+}
+
+.faq-answer {
+  font-size: 16px;
+  color: #333;
+  margin-top: 5px;
+}
