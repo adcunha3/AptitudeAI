@@ -14,7 +14,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { VideoCallService } from '../../services/video-call.service';
 import { CallComponent } from '../call/call.component';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-conference-chat',
@@ -25,6 +25,7 @@ import { HttpClient } from '@angular/common/http';
   encapsulation: ViewEncapsulation.None
 })
 export class ConferenceChatComponent implements OnInit {
+  rating: number = 5;
   searchUserId: string = '';
   searchedUser: { id: string; username: string } | null = null;
   addedParticipants: { id: string; username: string }[] = [];
@@ -56,27 +57,22 @@ export class ConferenceChatComponent implements OnInit {
     try {
       const userId = this.authService.getUserId();
   
-      // Reset the service before querying channels
       this.channelService.reset();
   
-      // Initialize channel service without filters to load all channels
       await this.channelService.init(
         { type: "messaging", members: { $in: [userId] } },
-        { name: 1 }, // Sort by name (optional)
-        { limit: 30 } // Set a limit of 30 channels
+        { name: 1 }, 
+        { limit: 30 } 
       );
   
-      // Log the channels to see what is returned
       this.channelService.channels$.subscribe((channels) => {
         console.log('Loaded Channels:', channels);
       });
   
-      // Monitor the channel query state to debug if needed
       this.channelService.channelQueryState$.subscribe((state) => {
         console.log('Channel Query State:', state);
       });
   
-      // Optionally, load more channels if needed
       await this.loadMoreChannels();
   
     } catch (error) {
@@ -84,7 +80,6 @@ export class ConferenceChatComponent implements OnInit {
     }
   }
   
-  // Load more channels if necessary
   async loadMoreChannels() {
     this.channelService.hasMoreChannels$.subscribe(async (hasMoreChannels) => {
       if (hasMoreChannels) {
@@ -96,36 +91,31 @@ export class ConferenceChatComponent implements OnInit {
     });
   }
 
-  // Search for a user by ID and create a chat channel with them
   searchUser() {
-    const token = this.authService.getToken();  // Get the token
+    const token = this.authService.getToken();
     this.http.get<any>(`http://localhost:3000/api/profile/${this.searchUserId}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     }).subscribe(
       async (user) => {
-        // Check if the user exists in Stream, create them if not
         try {
           const response = await this.chatService.chatClient.queryUsers({ id: { $eq: this.searchUserId } });
   
-          // Check the length of the 'users' array inside the response
           if (response.users.length === 0) {
             await this.chatService.chatClient.upsertUser({
               id: this.searchUserId,
-              name: user.username,  // Assuming 'username' exists in your response
-              image: user.profilePicture || "",  // Optional, if you have a profile picture
+              name: user.username,
+              image: user.profilePicture || "",
             });
           }
   
-          // Now create the channel
           const channel = this.chatService.chatClient.channel('messaging', `chat-${this.searchUserId}`, {
             image: user.profilePicture || '',
             name: `Chat with ${user.username}`
           });
           await channel.create();
   
-          // Update the active channel
           this.channelService.init({
             type: 'messaging',
             id: { $eq: `chat-${this.searchUserId}` }
@@ -141,6 +131,40 @@ export class ConferenceChatComponent implements OnInit {
       }
     );
   }
+
+  submitReview() {
+    const activeChannel = this.channelService.activeChannel;
+
+    if (!activeChannel) {
+        alert("No active chat detected.");
+        return;
+    }
+
+    // Find the other user in the chat
+    const members = Object.values(activeChannel.state.members);
+    const otherUser = members.find(member => member.user_id !== this.authService.getUserId());
+
+    if (!otherUser) {
+        alert("Could not determine the user you are chatting with.");
+        return;
+    }
+
+    const payload = {
+        userId: otherUser.user_id,
+        rating: this.rating
+    };
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    });
+
+    this.http.post('http://localhost:3000/api/leaderboard', payload, { headers })
+        .subscribe(
+            () => alert("Review submitted successfully!"),
+            (error) => console.error("Error submitting review:", error)
+        );
+}
 
   startCall() {
     const channelId = this.channelService.activeChannel?.id;

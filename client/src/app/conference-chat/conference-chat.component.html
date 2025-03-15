@@ -16,14 +16,22 @@
         <app-call [call]="videoCallService.call()!"></app-call>
     </ng-container>
 
-        <!-- Search section -->
-        <div class="search-container">
-            <input [(ngModel)]="searchUserId" placeholder="Enter user ID" />
-            <button (click)="searchUser()">Search</button>
-        </div>
+    <!-- Search section -->
+    <div class="search-container">
+        <input [(ngModel)]="searchUserId" placeholder="Enter user ID" />
+        <button (click)="searchUser()">Search</button>
+    </div>
     
-        <!-- Display found user -->
-        <div *ngIf="searchedUser">
-            <p>Found User: {{ searchedUser.username }}</p>
-        </div>
+    <!-- Display found user -->
+    <div *ngIf="searchedUser">
+        <p>Found User: {{ searchedUser.username }}</p>
+    </div>
+
+    <div class="review-container">
+        <p>Rate User:</p>
+        <input type="range" [(ngModel)]="rating" min="1" max="10" step="1" />
+        <span>{{ rating }}</span>
+        <button (click)="submitReview()">Submit Review</button>
+    </div>
+    
 </div>
