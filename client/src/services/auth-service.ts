@@ -1,96 +1,108 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable, signal } from "@angular/core";
-import { Router } from "@angular/router";
-import { SignUpModel } from "../models/signup-model";
-import { LoginModel } from "../models/login-model";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { signal } from '@angular/core';
 
-@Injectable({ providedIn: "root" })
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
-    private token = '';
-    private isAuth = signal<boolean>(false);
-    private logoutTimer: any = null;
+  token = signal<string>("");
+  chatToken = signal<string>("");
+  userId = signal<string>("");
+  private isAuth = signal<boolean>(false);
+  private logoutTimer: any = null;
+  constructor(private http: HttpClient, private router: Router) {}
 
-    constructor(private http: HttpClient, private router: Router) {}
+  getIsAuth() {
+    return this.isAuth();
+  }
 
-    getIsAuth(){
-        return this.isAuth();
-    }
+  getToken(): string {
+    return this.token();
+  }
 
-    getToken(): string {
-        return this.token;
-    }
+  getUserId(): string {
+    return this.userId();
+  }
 
-    signupUser(email: string, username: string, password: string, role: string) {
-        const signUpData: SignUpModel = { email, username, password, role };
-        this.http
-        .post('http://localhost:3000/api/auth/signup', signUpData, {
-            headers: { 'Content-Type': 'application/json' },
-        })
-        .subscribe({
-            next: (res) => console.log('Signup successful:', res),
-            error: (err) => console.error('Signup failed:', err),
-        });
-    }
+  getChatToken(): string {
+    return this.chatToken();
+  }
 
-    loginUser(username: string, password: string) {
-        const loginData: LoginModel = { username, password };
-        this.http
-        .post<{ token: string; expiresIn: number; id: string }>(
-            'http://localhost:3000/api/auth/signin',
-            loginData,
-            { headers: { 'Content-Type': 'application/json' } }
-        )
-        .subscribe({
-            next: (res) => {
-            this.token = res.token;
-            if (this.token) {
-                this.isAuth.set(true);
-                this.router.navigate(['/profile-main']);
-                this.logoutTimer = setTimeout(() => {this.logout()}, res.expiresIn * 10000);
-                const now = new Date();
-                const expiresDate = new Date(now.getTime() + (res.expiresIn * 1000));
-                this.storeLoginDetails(this.token, expiresDate, res.id);
-            } else {
-                console.error('Token is missing or invalid');
-            }
-            },
-            error: (err) => console.error('Login failed:', err),
-        });
-    }
+  signupUser(email: string, username: string, password: string, role: string) {
+    const signUpData = { email, username, password, role };
+    this.http
+      .post('http://localhost:3000/api/auth/signup', signUpData, {
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .subscribe({
+        next: (res) => console.log('Signup successful:', res),
+        error: (err) => console.error('Signup failed:', err),
+      });
+  }
 
-    logout() {
-        this.http
-        .post(
-            'http://localhost:3000/api/auth/signout',
-            {},
-            {
-            headers: { 'Content-Type': 'application/json' },
-            withCredentials: true,
-            }
-        )
-        .subscribe({
-            next: (res) => {
-                console.log('User logged out:', res);
-                this.token = '';
-                this.isAuth.set(false);
-                this.router.navigate(['/']);
-                clearTimeout(this.logoutTimer);
-                this.clearLoginDetails();
-            },
-            error: (err) => console.error('Logout failed:', err),
-        });
-    }
+  loginUser(username: string, password: string) {
+    const loginData = { username, password };
+    this.http
+      .post<{ token: string; expiresIn: number; userId: string; chatToken: string }>(
+        'http://localhost:3000/api/auth/signin',
+        loginData,
+        { headers: { 'Content-Type': 'application/json' } }
+      )
+      .subscribe({
+        next: (res) => {
+          if (res.token) {
+            this.isAuth.set(true);
+            this.router.navigate(['/profile-main']);
+            this.logoutTimer = setTimeout(() => this.logout(), res.expiresIn * 1000);
+            const now = new Date();
+            const expiresDate = new Date(now.getTime() + res.expiresIn * 1000);
+            this.storeLoginDetails(res.token, expiresDate, res.userId, res.chatToken);
+          } else {
+            console.error('Token is missing or invalid');
+          }
+        },
+        error: (err) => console.error('Login failed:', err),
+      });
+  }
 
-    storeLoginDetails(token: string, expirationDate: Date, userId: string){
-        localStorage.setItem('token', token);
-        localStorage.setItem('expiresIn', expirationDate.toISOString());
-        localStorage.setItem('userId', userId);
-    }
+  logout() {
+    this.http
+      .post(
+        'http://localhost:3000/api/auth/signout',
+        {},
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        }
+      )
+      .subscribe({
+        next: (res) => {
+          console.log('User logged out:', res);
+          this.token.set("");
+          this.isAuth.set(false);
+          this.router.navigate(['/']);
+          clearTimeout(this.logoutTimer);
+          this.clearLoginDetails();
+        },
+        error: (err) => console.error('Logout failed:', err),
+      });
+  }
 
-    clearLoginDetails(){
-        localStorage.removeItem('token');
-        localStorage.removeItem('expiresIn');
-    }
+  storeLoginDetails(token: string, expirationDate: Date, userId: string, chatToken: string) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('expiresIn', expirationDate.toISOString());
+    localStorage.setItem('userId', userId);
+    localStorage.setItem('chatToken', chatToken);
+  }
+
+  clearLoginDetails() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expiresIn');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('chatToken');
+  }
 
     getLocalStorageData(){
         const token = localStorage.getItem('token');
@@ -107,17 +119,19 @@ export class AuthService {
         }
     }
 
-    authenticateFromLocalStorage(){
-        const localStorageData = this.getLocalStorageData();
-        if(localStorageData){
-            const now = new Date();
-            const expiresIn = localStorageData.expiresIn.getTime() - now.getTime();
+  authenticateFromLocalStorage() {
+    const localStorageData = this.getLocalStorageData();
+    if (localStorageData) {
+      const now = new Date();
+      const expiresIn = localStorageData.expiresIn.getTime() - now.getTime();
 
-            if(expiresIn > 0){
-                this.token = localStorageData.token;
-                this.isAuth.set(true);
-                this.logoutTimer.setTimeout(expiresIn / 1000);
-            }
-        }
+      if (expiresIn > 0) {
+        this.token.set(localStorageData.token); // Set the token signal from localStorage
+        this.chatToken.set(localStorage.getItem('chatToken') || ''); // Set chatToken from localStorage
+        this.userId.set(localStorage.getItem('userId') || ''); 
+        this.isAuth.set(true); // Mark as authenticated
+        this.logoutTimer = setTimeout(() => this.logout(), expiresIn); // Set the logout timer based on expiration
+      }
     }
-}   
+  }
+}

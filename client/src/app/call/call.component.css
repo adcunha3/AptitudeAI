@@ -1,0 +1,48 @@
+section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    background: #20232a;
+    color: #61dafb;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .participants {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .call-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .call-controls button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background: #61dafb;
+    color: #20232a;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .call-controls button:hover {
+    background: #007acc;
+    color: #fff;
+  }
+  
+  .leave-button {
+    background: #ff4d4d;
+  }
+  
+  .leave-button:hover {
+    background: #cc0000;
+  }
