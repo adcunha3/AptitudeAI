@@ -12,9 +12,14 @@
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  width: 1200px; /* Increased the width of the card */
-  height: 600px;
-  padding: 0;
+  width: 1200px; /* Keeps the width fixed */
+  min-height: 400px; /* ✅ Starts smaller */
+  max-height: auto;  /* ✅ Allows it to grow */
+  padding: 20px;
+  transition: all 0.3s ease-in-out;
+}
+.question-text {
+  align-items: center;
 }
 
 .video-feedback-container {
@@ -25,6 +30,32 @@
   width: 100%;
   height: 100%;
   padding: 20px;
+}
+
+.ai-feedback {
+  background-color: #f8f9fa;
+  border-left: 5px solid #007bff;  /* Blue border */
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 15px;
+  width: 90%;
+  text-align: left;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  max-height: 150px; 
+  overflow-y: auto; 
+}
+
+.example-response-container{
+  background-color: #f8f9fa;
+  border-left: 5px solid #007bff;  /* Blue border */
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 15px;
+  width: 90%;
+  text-align: left;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  max-height: 150px;
+  overflow-y: auto; 
 }
 
 .video-container {
