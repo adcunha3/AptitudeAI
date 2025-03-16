@@ -20,7 +20,7 @@ module.exports = function(app) {
 
     // Profile Routes
     app.get("/api/profile/:id", [verifyToken.checkToken], profileController.getProfile);
-    app.get("/api/profiles", [verifyToken.checkToken], profileController.getAllProfiles); 
+    app.get("/api/profiles", [verifyToken.checkToken], profileController.getAllMentorProfiles); 
     app.put("/api/profile/:id", [verifyToken.checkToken], profileController.updateProfile); 
 
     // Leaderboard Routes

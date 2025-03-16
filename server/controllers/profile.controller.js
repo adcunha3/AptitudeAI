@@ -13,28 +13,28 @@ exports.getProfile = async (req, res) => {
     }
 };
 
-exports.getAllProfiles = async (req, res) => {
+exports.getAllMentorProfiles = async (req, res) => {
     try {
-        const users = await User.find().select('-password');
-        
-        if (users.length === 0) {
-            return res.status(404).send({ message: "No users found" });
+        const mentors = await User.find({ role: 'mentor' }).select('-password');
+
+        if (mentors.length === 0) {
+            return res.status(404).send({ message: "No mentors found" });
         }
 
-        const usersWithAvgScores = users.map(user => {
-            const averageScore = user.userScore.length > 0 
-                ? (user.userScore.reduce((acc, score) => acc + score, 0) / user.userScore.length).toFixed(2)
+        const mentorsWithAvgScores = mentors.map(mentor => {
+            const averageScore = mentor.userScore.length > 0 
+                ? (mentor.userScore.reduce((acc, score) => acc + score, 0) / mentor.userScore.length).toFixed(2)
                 : 0;
-            
+
             return {
-                ...user.toObject(),
+                ...mentor.toObject(),
                 averageScore: parseFloat(averageScore)
             };
         });
 
-        usersWithAvgScores.sort((a, b) => b.averageScore - a.averageScore);
+        mentorsWithAvgScores.sort((a, b) => b.averageScore - a.averageScore);
 
-        res.send(usersWithAvgScores);
+        res.send(mentorsWithAvgScores);
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
