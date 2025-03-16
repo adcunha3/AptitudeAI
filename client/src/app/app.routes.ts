@@ -6,6 +6,8 @@ import { RouteGuard } from '../guards/route-guard';
 import { ProfileComponent } from './profile/profile.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { MockInterviewComponent } from './mock-interview/mock-interview.component';
+import { ConferenceChatComponent } from './conference-chat/conference-chat.component';
+import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 import { ProfileMainComponent } from './profile-main/profile-main.component';
 
 export const routes: Routes = [
@@ -14,6 +16,8 @@ export const routes: Routes = [
     {path: 'sign-up', component:SignupComponent},
     {path: 'profile', component:ProfileComponent, canActivate:[RouteGuard]},
     {path: 'mock-interview', component:MockInterviewComponent, canActivate: [RouteGuard]},
+    {path: 'conference-call', component:ConferenceChatComponent, canActivate: [RouteGuard]},
+    {path: 'leaderboard', component:LeaderboardComponent, canActivate: [RouteGuard]},
     {path: 'profile-main', component:ProfileMainComponent, canActivate: [RouteGuard]}
 ];
 

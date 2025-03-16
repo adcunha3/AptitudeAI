@@ -3,6 +3,9 @@ const User = require("../models/user.model.js");
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const StreamChat = require('stream-chat').StreamChat;
+
+const serverClient = StreamChat.getInstance('pjdytf96h8m6', 'uce6zjxe4sxy3fmwaw5ar88f8qjt5hjzax9hffsf5wmfrt4gyhdb6cm97nem4twt');
 
 exports.signup = async (req, res) => {
     try {
@@ -44,15 +47,19 @@ exports.signin = async (req, res) => {
                 expiresIn: 86400, // 24hrs
             }
         );
+
+        const chatToken = serverClient.createToken(user._id.toString());
+
         req.session.token = token;
         req.session.username = user.username;
 
         res.status(200).send({
-            id: user._id,
+            userId: user._id.toString(),
             username: user.username,
             email: user.email,
             role: user.role,
             token: token,
+            chatToken: chatToken,
             expiresIn: 86400
         });
     } catch (err) {

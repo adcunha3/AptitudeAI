@@ -1,0 +1,76 @@
+/* Apply grey background to the whole page */
+body {
+    background-color: #f7f7f7; /* Light grey background for the entire page */
+    margin: 0; /* Remove default margin */
+    font-family: Arial, sans-serif; /* Optional: Add a general font family */
+}
+
+/* General Container */
+.landing-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    overflow-x: hidden;
+    padding: 20px;
+}
+
+/* Leaderboard Section */
+.leaderboard-section {
+    padding: 60px 20px;
+    position: relative;
+    background-color: white; /* White background for the leaderboard section */
+    border-radius: 10px; /* Optional rounded corners */
+    margin-bottom: 30px; /* Adds spacing between sections */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Light shadow for section depth */
+    margin-top: 50px; /* Adds space between the header and the leaderboard card */
+}
+
+.leaderboard-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #4b0082;
+    margin-bottom: 20px;
+}
+
+/* Leaderboard Table Container */
+.leaderboard-table-container {
+    max-height: 400px; /* Limit the height to create scroll */
+    overflow-y: scroll; /* Enable vertical scrolling */
+}
+
+/* Leaderboard Table */
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse; /* Removes space between table cells */
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.leaderboard-table th {
+    background-color: #4b0082;
+    color: white;
+    font-weight: bold;
+}
+
+/* Styling for rows */
+.leaderboard-table tbody tr:nth-child(odd) {
+    background-color: #f4f4f4;
+}
+
+.leaderboard-table tbody tr:hover {
+    background-color: #ddd; /* Highlight row on hover */
+}
+
+/* Rank, Username, and Average Score Styling */
+.rank,
+.username,
+.average-score {
+    padding: 10px;
+    font-size: 1rem;
+}
