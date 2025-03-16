@@ -2,42 +2,54 @@
     <div class="question-container">
       <h2 class="question-text">{{ question }}</h2>
     </div>
-    <div class="card">
-      <div class="video-feedback-container">
-        <div class="video-container">
-            <video id="video" #video autoplay controls></video>
-            <canvas id="canvas" width="640" height="480" style="display: none;" #canvas></canvas>
+  <div class="card">
+    <div class="video-feedback-container">
+      <div class="video-container">
+        <video id="video" #video autoplay controls></video>
+        <canvas id="canvas" width="640" height="480" style="display: none;" #canvas></canvas>
+      </div>
+      <div class="feedback-container">
+        <h3>Real-time Feedback</h3>
+        <div class="score">
+          <label for="eye-contact">Eye Contact:</label>
+          <div class="progress-bar">
+            <div [style.width]="eyeContactPercent + '%'" class="progress"></div>
+          </div>
+          <span>{{ eyeContactPercent }}%</span>
         </div>
-        <div class="feedback-container">
-          <h3>Real-time Feedback</h3>
-          <div class="score">
-            <label for="eye-contact">Eye Contact:</label>
-            <div class="progress-bar">
-              <div [style.width]="eyeContactPercent + '%'" class="progress"></div>
-            </div>
-            <span>{{ eyeContactPercent }}%</span>
+        <div class="score">
+          <label for="body-language">Body Language:</label>
+          <div class="progress-bar">
+            <div [style.width]="bodyLanguagePercent + '%'" class="progress"></div>
           </div>
-          <div class="score">
-            <label for="body-language">Body Language:</label>
-            <div class="progress-bar">
-              <div [style.width]="bodyLanguagePercent + '%'" class="progress"></div>
-            </div>
-            <span>{{ bodyLanguagePercent }}%</span>
+          <span>{{ bodyLanguagePercent }}%</span>
+        </div>
+        <div class="score">
+          <label for="emotion">Emotion:</label>
+          <div class="progress-bar">
+            <div [style.width]="emotionPercent + '%'" class="progress"></div>
           </div>
-          <div class="score">
-            <label for="emotion">Emotion:</label>
-            <div class="progress-bar">
-              <div [style.width]="emotionPercent + '%'" class="progress"></div>
-            </div>
-            <span>{{ emotionPercent }}%</span>
+          <span>{{ emotionPercent }}%</span>
+        </div>
+        <div class="score">
+          <label for="overall-score">Overall Score:</label>
+          <div class="progress-bar">
+            <div [style.width]="overallPercent + '%'" class="progress"></div>
           </div>
-          <div class="score">
-            <label for="overall-score">Overall Score:</label>
-            <div class="progress-bar">
-              <div [style.width]="overallPercent + '%'" class="progress"></div>
-            </div>
-            <span>{{ overallPercent }}%</span>
+          <span>{{ overallPercent }}%</span>
+        </div>
+        <div class="score">
+          <label for="sentiment">Sentiment Score:</label>
+          <div class="progress-bar">
+            <div [style.width]="sentimentScore + '%'" class="progress"></div>
           </div>
+          <span>{{ sentimentScore }}%</span>
+        </div>
+        <div class="score">
+          <label for="speech-to-text">Speech-to-Text:</label>
+          <textarea [(ngModel)]="spokenText" readonly placeholder="Real-time speech will appear here..."></textarea>
+        </div>
+
           <div class="response-container">
             <h3>Type Your Response</h3>
             <textarea class="response-box" placeholder="Type your response..." (input)="handleResponseInput($event)"></textarea>
@@ -51,11 +63,14 @@
             <h4 class="example-header">Example Response</h4>
               <p>{{ exampleResponse }}</p>
           </div>
-        </div>
       </div>
     </div>
-    <div class="recording-button-container">
-        <button class="btn btn-primary btn-lg" *ngIf="!isRecording" (click)="startRecording()">Start Recording</button>
-        <button class="btn btn-warning btn-lg" *ngIf="isRecording" (click)="stopRecording()">Stop Recording</button>
-      </div>
   </div>
+
+  <!-- Unified Recording Button -->
+  <div class="recording-button-container">
+    <button class="btn btn-primary btn-lg" (click)="toggleRecording()">
+      {{ isRecording ? 'Stop Recording' : 'Start Recording' }}
+    </button>
+  </div>
+</div>
