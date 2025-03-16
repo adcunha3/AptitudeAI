@@ -46,13 +46,11 @@
           <span>{{ sentimentScore }}%</span>
         </div>
         <div class="score">
-          <label for="speech-to-text">Speech-to-Text:</label>
-          <textarea [(ngModel)]="spokenText" readonly placeholder="Real-time speech will appear here..."></textarea>
+          <label for="speech-to-text">Response:</label>
+          <textarea [(ngModel)]="spokenText" readonly placeholder="Your spoken response will appear here..."></textarea>
         </div>
 
           <div class="response-container">
-            <h3>Type Your Response</h3>
-            <textarea class="response-box" placeholder="Type your response..." (input)="handleResponseInput($event)"></textarea>
             <button class="btn btn-success" (click)="submitResponse()">Submit Response</button>
           </div>
           <div class="ai-feedback">

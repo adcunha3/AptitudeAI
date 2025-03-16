@@ -71,9 +71,17 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
 
   /** Submits user response to AI backend for evaluation */
   submitResponse() {
-    this.http.post<{ analysis: string, example_response: string, follow_up: string }>("http://localhost:8080/evaluate-response", { response: this.userResponse })
+
+    if (!this.spokenText.trim()) {
+      console.error("No spoken text to submit.");
+      return;
+    }
+
+    this.http.post<{ analysis: string, example_response: string, follow_up: string }>("http://localhost:8080/evaluate-response", { response: this.spokenText })
       .subscribe({
         next: (res) => { this.aiFeedback = res.analysis; this.exampleResponse = res.example_response; this.question = res.follow_up;
+
+          this.spokenText = "";
          },
         error: (err) => { console.error("Error fetching feedback:", err); }
       });
@@ -101,6 +109,7 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
       this.stopRecording();
     } else {
       this.startRecording();
+      this.startSpeechRecognition();
     }
   }
 
@@ -230,6 +239,7 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
 
       this.recognition.onstart = () => {
         console.log('Speech recognition started...');
+        this.spokenText = "";
       };
 
       this.recognition.onresult = (event: any) => {
