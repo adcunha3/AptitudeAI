@@ -1,4 +1,5 @@
-.edit-profile-container {
+
+.profile-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -8,6 +9,7 @@
   background: white;
   padding-bottom: 50px;
 }
+
 
 .cover-photo {
   width: 100%;
@@ -22,13 +24,20 @@
   position: relative;
 }
 
+.cover-text {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+
 .profile-header {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-top: -60px; 
+  margin-top: -60px;
 }
+
 
 .profile-image-wrapper {
   position: relative;
@@ -47,6 +56,7 @@
   background-color: white;
 }
 
+
 .username {
   font-size: 22px;
   color: #333;
@@ -60,56 +70,25 @@
   font-style: italic;
 }
 
-.profile-form {
-  width: 90%;
-  max-width: 500px;
+.info-box {
   background: #f9f9f9;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   margin-top: 20px;
+  width: 90%;
+  max-width: 500px;
+  text-align: left;
 }
 
-.form-group {
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
+.info-box p {
+  margin: 10px 0;
+  font-size: 16px;
+  color: #333;
 }
 
-label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #444;
-}
-
-input,
-textarea {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.file-upload input {
-  border: none;
-}
-
-.profile-image-preview {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-.profile-image-preview img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  border: 2px dashed #ccc;
-  object-fit: cover;
-}
-
-.save-btn {
-  width: 100%;
+.edit-btn {
+  width: 200px;
   padding: 12px;
   background-color: #6a11cb;
   color: white;
@@ -121,6 +100,6 @@ textarea {
   transition: 0.3s;
 }
 
-.save-btn:hover {
+.edit-btn:hover {
   background-color: #2575fc;
 }

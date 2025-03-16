@@ -21,12 +21,15 @@ const UserSchema = mongoose.Schema({
     },
     interests: {
         type: String,
+        default: "No interests listed"
     },
     bio: {
         type: String,
+        default: "No bio available"
     },
-    profilePicture: {
-        type: String
+    profilePicture:{
+        type: String,
+         default: "/assets/default-profile.png"
     },
     userScore: {
         type: [Number],

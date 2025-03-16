@@ -21,6 +21,7 @@
     "@ffmpeg/ffmpeg": "^0.12.10",
     "@ffmpeg/util": "^0.12.1",
     "@ngx-translate/core": "^15.0.0",
+    "@ngx-translate/http-loader": "^16.0.1",
     "@stream-io/stream-chat-css": "^5.7.1",
     "@stream-io/video-client": "^1.17.1",
     "bootstrap": "^5.3.3",
