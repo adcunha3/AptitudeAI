@@ -1,115 +1,139 @@
-/* Apply grey background to the whole page */
 body {
-    background-color: #f7f7f7; /* Light grey background for the entire page */
-    margin: 0; /* Remove default margin */
-    font-family: Arial, sans-serif; /* Optional: Add a general font family */
+  font-family: 'Poppins', sans-serif;
+  background-color: #f8f8f8;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  text-align: center;
 }
 
-/* General Container */
-.landing-container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    text-align: center;
-    overflow-x: hidden;
-    padding: 20px;
+.hero-section {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+  padding: 80px 20px;
+  border-radius: 12px;
 }
 
-/* Section Styling */
-section {
-    padding: 60px 20px;
-    position: relative;
-    background-color: white; /* White background for each section */
-    border-radius: 10px; /* Optional rounded corners */
-    margin-bottom: 30px; /* Adds spacing between sections */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Light shadow for section depth */
+.hero-section .section-title {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 20px;
 }
 
-/* Section Title */
-.section-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #4b0082;
-    margin-bottom: 20px;
+.hero-section .highlight {
+  color: #ffdd57;
 }
 
-/* Divider Lines */
+.description-box {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  border-radius: 10px;
+  margin: 0 auto;
+  max-width: 800px;
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.cta-btn {
+  background-color: #ffdd57;
+  color: #333;
+  padding: 12px 24px;
+  border-radius: 6px;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+}
+
+.cta-btn:hover {
+  background-color: #ffd700;
+}
+
 .section-divider {
-    width: 90%;
-    margin: 40px auto;
-    border-bottom: 1px solid #ddd;
+  width: 60px;
+  height: 4px;
+  background-color: #ffdd57;
+  margin: 30px auto;
 }
 
-/* Demo Section */
-.video-box {
-    width: 80%;
-    max-width: 700px;
-    height: 400px;
-    margin: 0 auto 20px auto;
-    background-color: #ececec; /* Light grey placeholder */
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #4b0082;
-    font-size: 1.5rem;
-    font-weight: bold;
-    border: 2px solid #4b0082;
+.team-section {
+  padding: 60px 20px;
 }
 
-/* Team Section */
+.team-section .section-title {
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+
 .team-members {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .team-member {
-    text-align: center;
-    max-width: 200px;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 200px;
+  transition: transform 0.3s ease;
+}
+
+.team-member:hover {
+  transform: scale(1.05);
 }
 
 .team-member img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    margin-bottom: 10px;
-    border: 3px solid #4b0082;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #6200ea;
 }
 
-/* FAQ Section Styling */
+.team-member h3 {
+  font-size: 18px;
+  margin-top: 10px;
+  color: #4b0082;
+}
+
+.team-member p {
+  font-size: 14px;
+  color: #666;
+}
+
 .faq-section {
-    padding: 60px 20px;
-    background-color: #f8f8f8; /* Optional: background for the FAQ section */
-    display: flex;
-    flex-direction: column; /* Stacks the FAQ items vertically */
-    justify-content: center; /* Centers the FAQ items vertically */
-    align-items: center; /* Centers the FAQ items horizontally */
-    text-align: center; /* Centers text in FAQ items */
-  }
-  
-  .faq-item {
-    margin-bottom: 20px;
-    max-width: 800px; /* Limiting the width for better readability */
-  }
-  
-  .faq-question {
-    font-weight: bold;
-    color: #4b0082;
-    margin-bottom: 10px;
-    font-size: 1.2rem;
-  }
-  
-  .faq-answer {
-    color: #333;
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-  
-  /* Optional: Adding a border between FAQ items */
-  .faq-item:not(:last-child) {
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 20px;
-  }
-  
+  padding: 60px 20px;
+  background: #fff;
+  border-radius: 10px;
+}
+
+.faq-section .section-title {
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+
+.faq-item {
+  background: #f4f4f4;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.faq-question {
+  font-weight: bold;
+  color: #4b0082;
+}
+
+.faq-answer {
+  font-size: 16px;
+  color: #333;
+  margin-top: 5px;
+}
