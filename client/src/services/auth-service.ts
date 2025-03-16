@@ -35,7 +35,7 @@ export class AuthService {
     loginUser(username: string, password: string) {
         const loginData: LoginModel = { username, password };
         this.http
-        .post<{ token: string; expiresIn: number }>(
+        .post<{ token: string; expiresIn: number; id: string }>(
             'http://localhost:3000/api/auth/signin',
             loginData,
             { headers: { 'Content-Type': 'application/json' } }
@@ -49,7 +49,7 @@ export class AuthService {
                 this.logoutTimer = setTimeout(() => {this.logout()}, res.expiresIn * 10000);
                 const now = new Date();
                 const expiresDate = new Date(now.getTime() + (res.expiresIn * 1000));
-                this.storeLoginDetails(this.token, expiresDate);
+                this.storeLoginDetails(this.token, expiresDate, res.id);
             } else {
                 console.error('Token is missing or invalid');
             }
@@ -81,9 +81,10 @@ export class AuthService {
         });
     }
 
-    storeLoginDetails(token: string, expirationDate: Date){
+    storeLoginDetails(token: string, expirationDate: Date, userId: string){
         localStorage.setItem('token', token);
         localStorage.setItem('expiresIn', expirationDate.toISOString());
+        localStorage.setItem('userId', userId);
     }
 
     clearLoginDetails(){
@@ -94,13 +95,15 @@ export class AuthService {
     getLocalStorageData(){
         const token = localStorage.getItem('token');
         const expiresIn = localStorage.getItem('expiresIn');
+        const userId = localStorage.getItem('userId');
 
         if(!token || !expiresIn){
             return;
         }
         return {
             'token': token,
-            'expiresIn': new Date(expiresIn)
+            'expiresIn': new Date(expiresIn),
+            'userId': userId
         }
     }
 
