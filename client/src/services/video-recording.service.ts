@@ -17,15 +17,21 @@ export class VideoRecordingService {
 
     // Upload a file to the server
     uploadFile(file: File): void {
+        const userId = localStorage.getItem('userId');
+    
+        if (!userId) {
+            console.error('User ID not found in localStorage');
+            return;
+        }
+    
         const formData: FormData = new FormData();
         formData.append('file', file, file.name);
-
-        this.http
-            .post('http://localhost:3000/api/files/upload', formData)
-            .subscribe({
-                next: (res) => console.log('Upload successful:', res),
-                error: (err) => console.error('Upload failed:', err),
-            });
+        formData.append('userId', userId);
+    
+        this.http.post('http://localhost:3000/api/files/upload', formData).subscribe({
+            next: (res) => console.log('Upload successful:', res),
+            error: (err) => console.error('Upload failed:', err),
+        });
     }
 
     // Upload base64 image and process frame for analysis
