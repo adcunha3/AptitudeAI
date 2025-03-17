@@ -1,37 +1,46 @@
 <div id="root">
-    <stream-channel-list></stream-channel-list>
-    <stream-channel>
-        <stream-channel-header></stream-channel-header>
-        <stream-message-list></stream-message-list>
-        <stream-message-input></stream-message-input>
-    </stream-channel>
+    <!-- Sidebar for Channels -->
+    <aside class="sidebar">
+        <stream-channel-list></stream-channel-list>
+    </aside>
 
+    <!-- Main Chat Section -->
+    <main class="chat-container">
+        <stream-channel>
+            <stream-channel-header></stream-channel-header>
+            <stream-message-list></stream-message-list>
+            <stream-message-input></stream-message-input>
+        </stream-channel>
 
-    <!-- Button to Start Call -->
-    <div class="start-call-container">
-        <button class="start-call-button" (click)="startCall()">Start Call</button>
-    </div>
-    <!-- Call Component, shown if callId is set and call is defined -->
-    <ng-container *ngIf="videoCallService.call()">
-        <app-call [call]="videoCallService.call()!"></app-call>
-    </ng-container>
+        <!-- Call Controls -->
+        <div class="start-call-container">
+            <button class="start-call-button" (click)="startCall()">Start Call</button>
+        </div>
 
-    <!-- Search section -->
-    <div class="search-container">
-        <input [(ngModel)]="searchUserId" placeholder="Enter user ID" />
-        <button (click)="searchUser()">Search</button>
-    </div>
-    
-    <!-- Display found user -->
-    <div *ngIf="searchedUser">
-        <p>Found User: {{ searchedUser.username }}</p>
-    </div>
+        <!-- Video Call Section -->
+        <ng-container *ngIf="videoCallService.call()">
+            <app-call [call]="videoCallService.call()!"></app-call>
+        </ng-container>
+    </main>
 
-    <div class="review-container">
-        <p>Rate User:</p>
-        <input type="range" [(ngModel)]="rating" min="1" max="10" step="1" />
-        <span>{{ rating }}</span>
-        <button (click)="submitReview()">Submit Review</button>
-    </div>
-    
+    <!-- Utility Section: Search & Rating -->
+    <aside class="utility-panel">
+        <!-- User Search -->
+        <div class="search-container">
+            <input [(ngModel)]="searchUserId" placeholder="Enter user ID" />
+            <button (click)="searchUser()">Search</button>
+        </div>
+
+        <div *ngIf="searchedUser" class="user-result">
+            <p>Found User: {{ searchedUser.username }}</p>
+        </div>
+
+        <!-- Rating System -->
+        <div class="review-container">
+            <p>Rate User:</p>
+            <input type="range" [(ngModel)]="rating" min="1" max="10" step="1" />
+            <span>{{ rating }}</span>
+            <button (click)="submitReview()">Submit Review</button>
+        </div>
+    </aside>
 </div>

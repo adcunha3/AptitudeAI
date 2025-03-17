@@ -3,18 +3,34 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 30px; /* Adjusted padding for more space */
+    padding: 15px 20px; /* Adjusted padding to fit better on screen */
     background-color: white; /* White background for clean contrast */
     color: #4b0082; /* Dark purple text for a clean, modern look */
     width: 100%; /* Full width */
+    box-sizing: border-box; /* Ensures the padding is included in the width */
     margin: 0; /* No margin, since we're using full width */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Light shadow for subtle depth */
+    position: fixed; /* Keep navbar fixed at the top */
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Ensure navbar stays on top */
+}
+.navbar-logo {
+    height: 50px;  /* Adjust based on desired logo size */
+    margin-right: 10px;  /* Space between logo and text */
+    vertical-align: middle; /* Ensures the logo aligns properly with the text */
+  }
+  
+/* Ensure navbar does not overflow the width of the screen */
+body {
+    margin-top: 70px; /* Give room for the fixed navbar */
 }
 
 /* Brand name styling */
 .navbar-header {
     display: flex;
     align-items: center;
+    flex: 1; /* Allow the brand to take up space */
 }
 
 .navbar-brand {
@@ -32,6 +48,8 @@
     gap: 25px; /* Increased gap for a cleaner look */
     margin: 0;
     padding: 0;
+    flex: 1; /* Make the links take up remaining space */
+    justify-content: flex-end; /* Align links to the right */
 }
 
 /* Links inside navbar */
