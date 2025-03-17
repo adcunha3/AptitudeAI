@@ -9,6 +9,7 @@ import { MockInterviewComponent } from './mock-interview/mock-interview.componen
 import { ConferenceChatComponent } from './conference-chat/conference-chat.component';
 import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 import { ProfileMainComponent } from './profile-main/profile-main.component';
+import { HistoryComponent } from './history/history.component';
 
 export const routes: Routes = [
     {path: '', component:LandingPageComponent},
@@ -18,7 +19,8 @@ export const routes: Routes = [
     {path: 'mock-interview', component:MockInterviewComponent, canActivate: [RouteGuard]},
     {path: 'conference-call', component:ConferenceChatComponent, canActivate: [RouteGuard]},
     {path: 'leaderboard', component:LeaderboardComponent, canActivate: [RouteGuard]},
-    {path: 'profile-main', component:ProfileMainComponent, canActivate: [RouteGuard]}
+    {path: 'profile-main', component:ProfileMainComponent, canActivate: [RouteGuard]},
+    {path: 'history', component:HistoryComponent, canActivate: [RouteGuard]}
 ];
 
 @NgModule({

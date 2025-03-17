@@ -217,8 +217,10 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
   }
 
   private uploadRecording(): void {
+    const uniqueFilename = `recording_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.webm`;
     const videoBuffer = new Blob(this.recordedBlobs, { type: 'video/webm' });
-    const file = new File([videoBuffer], 'recording.webm', { type: 'video/webm' });
+    const file = new File([videoBuffer], uniqueFilename, { type: 'video/webm' });
+  
     this.videoRecordingService.uploadFile(file);
   }
 

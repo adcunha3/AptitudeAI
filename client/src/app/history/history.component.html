@@ -1,0 +1,14 @@
+<div *ngIf="videos.length > 0; else noVideos">
+    <h2>Your Uploaded Videos</h2>
+    <div *ngFor="let video of videos" class="video-container">
+      <h3>{{ video.filename }}</h3>
+      <video width="400" controls>
+        <source [src]="video.streamUrl" type="video/webm">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </div>
+  
+  <ng-template #noVideos>
+    <p>No videos available.</p>
+  </ng-template>
