@@ -98,3 +98,31 @@
 .review-container button:hover {
   background: #388e3c;
 }
+/* Start Call Button */
+.start-call-button {
+  background: #7e22ce; /* Match the sidebar background */
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 30px; /* More rounded for a sleek look */
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+}
+
+.start-call-button:hover {
+  background: #9333ea; /* Slightly darker purple for hover */
+  transform: translateY(-2px); /* Slight hover lift effect */
+}
+
+.start-call-button:active {
+  background: #7e22ce; /* Match original color on click */
+  transform: translateY(2px); /* Button press effect */
+}
+
+.start-call-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #9333ea; /* Focus state with outline for accessibility */
+}
