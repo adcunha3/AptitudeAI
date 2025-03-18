@@ -1,74 +1,101 @@
 <div class="mock-interview-container">
-    <div class="question-container">
-      <h2 class="question-text">{{ question }}</h2>
+  <div class="question-container">
+    <h2 class="question-text">{{ question }}</h2>
+  </div>
+<div class="card">
+  <div class="video-feedback-container">
+    <div class="video-container">
+      <video id="video" #video autoplay controls></video>
+      <canvas id="canvas" width="640" height="480" style="display: none;" #canvas></canvas>
     </div>
-  <div class="card">
-    <div class="video-feedback-container">
-      <div class="video-container">
-        <video id="video" #video autoplay controls></video>
-        <canvas id="canvas" width="640" height="480" style="display: none;" #canvas></canvas>
-      </div>
-      <div class="feedback-container">
-        <h3>Real-time Feedback</h3>
-        <div class="score">
-          <label for="eye-contact">Eye Contact:</label>
-          <div class="progress-bar">
-            <div [style.width]="eyeContactPercent + '%'" class="progress"></div>
-          </div>
-          <span>{{ eyeContactPercent }}%</span>
-        </div>
-        <div class="score">
-          <label for="body-language">Body Language:</label>
-          <div class="progress-bar">
-            <div [style.width]="bodyLanguagePercent + '%'" class="progress"></div>
-          </div>
-          <span>{{ bodyLanguagePercent }}%</span>
-        </div>
-        <div class="score">
-          <label for="emotion">Emotion:</label>
-          <div class="progress-bar">
-            <div [style.width]="emotionPercent + '%'" class="progress"></div>
-          </div>
-          <span>{{ emotionPercent }}%</span>
-        </div>
-        <div class="score">
-          <label for="overall-score">Overall Score:</label>
-          <div class="progress-bar">
-            <div [style.width]="overallPercent + '%'" class="progress"></div>
-          </div>
-          <span>{{ overallPercent }}%</span>
-        </div>
-        <div class="score">
-          <label for="sentiment">Sentiment Score:</label>
-          <div class="progress-bar">
-            <div [style.width]="sentimentScore + '%'" class="progress"></div>
-          </div>
-          <span>{{ sentimentScore }}%</span>
-        </div>
-        <div class="score">
-          <label for="speech-to-text">Response:</label>
-          <textarea [(ngModel)]="spokenText" readonly placeholder="Your spoken response will appear here..."></textarea>
-        </div>
+    <div class="feedback-container">
+      <h3>Real-time Feedback</h3>
 
-          <div class="response-container">
-            <button class="btn btn-success" (click)="submitResponse()">Submit Response</button>
-          </div>
-          <div class="ai-feedback">
-            <h4>Feedback</h4>
-            <p>{{ aiFeedback }}</p>
-          </div>
-          <div class="example-response-container">
-            <h4 class="example-header">Example Response</h4>
-              <p>{{ exampleResponse }}</p>
-          </div>
+      <div class="score">
+        <label for="eye-contact">Eye Contact:
+          <span class="info-icon">ℹ️
+            <span class="tooltip">👁️ 0%: Avoiding eye contact <br> 🎯 100%: Engaged & focused</span>
+          </span>
+        </label>
+        <div class="progress-bar">
+          <div [style.width]="eyeContactPercent + '%'" class="progress"></div>
+        </div>
+        <span>{{ eyeContactPercent }}%</span>
       </div>
+
+      <div class="score">
+        <label for="body-language">Body Language:
+          <span class="info-icon">ℹ️
+            <span class="tooltip">🚶‍♂️ 0%: Stiff, nervous <br> 🎭 100%: Confident posture</span>
+          </span>
+        </label>
+        <div class="progress-bar">
+          <div [style.width]="bodyLanguagePercent + '%'" class="progress"></div>
+        </div>
+        <span>{{ bodyLanguagePercent }}%</span>
+      </div>
+
+      <div class="score">
+        <label for="emotion">Emotion:
+          <span class="info-icon">ℹ️
+            <span class="tooltip">😐 0%: Neutral/negative <br> 😀 100%: Expressive & engaged</span>
+          </span>
+        </label>
+        <div class="progress-bar">
+          <div [style.width]="emotionPercent + '%'" class="progress"></div>
+        </div>
+        <span>{{ emotionPercent }}%</span>
+      </div>
+
+      <div class="score">
+        <label for="sentiment">Sentiment Score:
+          <span class="info-icon">ℹ️
+            <span class="tooltip">🔴 0%: Hesitant, negative <br> 🟢 100%: Confident, clear tone</span>
+          </span>
+        </label>
+        <div class="progress-bar">
+          <div [style.width]="sentimentScore + '%'" class="progress"></div>
+        </div>
+        <span>{{ sentimentScore }}%</span>
+      </div>
+
+      <div class="score">
+        <label for="overall-score">Overall Score:
+          <span class="info-icon">ℹ️
+            <span class="tooltip">📉 0%: Needs improvement <br> 📈 100%: Excellent in all areas</span>
+          </span>
+        </label>
+        <div class="progress-bar">
+          <div [style.width]="overallPercent + '%'" class="progress"></div>
+        </div>
+        <span>{{ overallPercent }}%</span>
+      </div>
+
+      <div class="score">
+        <label for="speech-to-text">Response:</label>
+        <textarea [(ngModel)]="spokenText" readonly class="response-box" 
+          placeholder="Your spoken response will appear here..."></textarea>
+      </div>
+
+        <div class="response-container">
+          <button class="btn btn-success" (click)="submitResponse()">Submit Response</button>
+        </div>
+        <div class="ai-feedback">
+          <h4>Feedback</h4>
+          <p>{{ aiFeedback }}</p>
+        </div>
+        <div class="example-response-container">
+          <h4 class="example-header">Example Response</h4>
+            <p>{{ exampleResponse }}</p>
+        </div>
     </div>
   </div>
+</div>
 
-  <!-- Unified Recording Button -->
-  <div class="recording-button-container">
-    <button class="btn btn-primary btn-lg" (click)="toggleRecording()">
-      {{ isRecording ? 'Stop Recording' : 'Start Recording' }}
-    </button>
-  </div>
+<!-- Unified Recording Button -->
+<div class="recording-button-container">
+  <button class="btn btn-primary btn-lg" (click)="toggleRecording()">
+    {{ isRecording ? 'Stop Recording' : 'Start Recording' }}
+  </button>
+</div>
 </div>
