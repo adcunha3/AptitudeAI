@@ -1,126 +1,134 @@
-.edit-profile-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 900px;
-  margin: auto;
+/* Profile Container */
+.profile-container {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
   background: white;
-  padding-bottom: 50px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-.cover-photo {
-  width: 100%;
-  height: 180px;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  position: relative;
-}
-
+/* Profile Header */
 .profile-header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  margin-top: -60px; 
+  margin-bottom: 20px;
 }
 
 .profile-image-wrapper {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  width: 100%;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #ddd;
 }
 
 .profile-image {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 4px solid white;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  background-color: white;
 }
 
 .username {
-  font-size: 22px;
-  color: #333;
+  font-size: 20px;
   font-weight: bold;
   margin-top: 10px;
 }
 
 .role {
-  font-size: 16px;
-  color: #666;
-  font-style: italic;
-}
-
-.profile-form {
-  width: 90%;
-  max-width: 500px;
-  background: #f9f9f9;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
-}
-
-label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #444;
-}
-
-input,
-textarea {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  color: #777;
   font-size: 14px;
 }
 
-.file-upload input {
-  border: none;
+/* Profile Form */
+.profile-form-container {
+  background: #f8f8f8;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
 }
 
-.profile-image-preview {
-  display: flex;
-  justify-content: center;
+.profile-form label {
+  font-weight: bold;
+  display: block;
   margin-top: 10px;
+  text-align: left;
 }
 
-.profile-image-preview img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  border: 2px dashed #ccc;
-  object-fit: cover;
+.profile-email {
+  background: #eee;
+  padding: 8px;
+  border-radius: 5px;
+  text-align: left;
+}
+
+.profile-form input,
+.profile-form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 .save-btn {
   width: 100%;
-  padding: 12px;
-  background-color: #6a11cb;
+  padding: 10px;
+  margin-top: 15px;
+  border: none;
+  background: #6200ea;
   color: white;
   font-size: 16px;
-  border: none;
-  border-radius: 8px;
+  border-radius: 5px;
   cursor: pointer;
-  margin-top: 20px;
-  transition: 0.3s;
 }
 
 .save-btn:hover {
-  background-color: #2575fc;
+  background: #3700b3;
+}
+
+/* Change Password Section */
+.password-change-container {
+  background: #f8f8f8;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.password-change-container h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+.password-form label {
+  font-weight: bold;
+  display: block;
+  margin-top: 10px;
+  text-align: left;
+}
+
+.password-form input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.password-form button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  border: none;
+  background: #6200ea;
+  color: white;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.password-form button:hover {
+  background: #3700b3;
 }

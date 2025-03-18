@@ -1,13 +1,10 @@
-<div class="edit-profile-container">
+<div class="profile-container">
   
-  <div class="cover-photo">
-    <h1>Edit Your Profile</h1>
-  </div>
-
+  <!-- Profile Header -->
   <div class="profile-header">
     <div class="profile-image-wrapper">
       <img 
-        [src]="profileService.image || '/assets/default-profile.png'" 
+        [src]="profileService.image() || '/assets/default-profile.png'" 
         alt="Profile Image" 
         class="profile-image"
         onerror="this.src='/assets/default-profile.png'"
@@ -17,61 +14,39 @@
     <p class="role">{{ profileService.role() }}</p>
   </div>
 
-  <!-- Profile Form -->
-  <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()" class="profile-form">
-    
-    <div class="profile-details">
-      <p><strong>Email:</strong> {{ profileService.email() }}</p>
-    </div>
+  <!-- Profile Edit Form -->
+  <div class="profile-form-container">
+    <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()" class="profile-form">
+      <label>Email:</label>
+      <p class="profile-email">{{ profileService.email() }}</p>
 
-    <div class="form-group">
       <label for="bio">Bio</label>
-      <textarea id="bio" formControlName="bio" placeholder="Tell us about yourself"></textarea>
-    </div>
+      <textarea id="bio" formControlName="bio"></textarea>
 
-    <div class="form-group">
       <label for="interests">Interests</label>
-      <input id="interests" formControlName="interests" type="text" placeholder="Enter your interests" />
-    </div>
+      <input id="interests" formControlName="interests" type="text" />
 
-    <div class="form-group file-upload">
       <label for="profilePicture">Profile Picture</label>
       <input id="profilePicture" type="file" (change)="onFileSelected($event)" />
-    </div>
 
-    <div class="profile-image-preview">
-      <img [src]="previewUrl" alt="Profile Preview" width="100"/>
-    </div>
+      <button type="submit" class="save-btn">Save Changes</button>
+    </form>
+  </div>
 
-    <button type="submit" class="save-btn">Save Changes</button>
-  </form>
+  <!-- Change Password Section -->
+  <div class="password-change-container">
+    <h3>Change Password</h3>
+    <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="password-form">
+      <label for="currentPassword">Current Password</label>
+      <input type="password" id="currentPassword" formControlName="currentPassword" />
 
-  <hr>
+      <label for="newPassword">New Password</label>
+      <input type="password" id="newPassword" formControlName="newPassword" />
 
-  <!-- Password Change Form -->
-  <div class="change-password-container">
-    <h2>Change Password</h2>
-    <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
-      
-      <div class="form-group">
-        <label for="currentPassword">Current Password</label>
-        <input type="password" id="currentPassword" formControlName="currentPassword" required>
-      </div>
+      <label for="confirmPassword">Confirm New Password</label>
+      <input type="password" id="confirmPassword" formControlName="confirmPassword" />
 
-      <div class="form-group">
-        <label for="newPassword">New Password</label>
-        <input type="password" id="newPassword" formControlName="newPassword" required>
-      </div>
-
-      <div class="form-group">
-        <label for="confirmPassword">Confirm New Password</label>
-        <input type="password" id="confirmPassword" formControlName="confirmPassword" required>
-        <span *ngIf="passwordForm.hasError('mismatch', 'confirmPassword')" class="error-text">
-          Passwords do not match!
-        </span>
-      </div>
-
-      <button type="submit" class="change-password-btn">Change Password</button>
+      <button type="submit" class="save-btn">Change Password</button>
     </form>
   </div>
 
