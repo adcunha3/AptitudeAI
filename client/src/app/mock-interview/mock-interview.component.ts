@@ -113,79 +113,63 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
     }
   }
 
-  startRecording(): void {
-    // Reset the recorded blobs array to start fresh
-    this.recordedBlobs = [];
-
-    // Ensure that the stream is available before proceeding
-    if (!this.stream) {
-      console.error("Stream not available.");
+  private startRecording(): void {
+    // Check if the browser supports media recording
+    if (!navigator.mediaDevices || !window.MediaRecorder) {
+      console.error('Your browser does not support media recording.');
       return;
     }
 
-    const options: MediaRecorderOptions = { mimeType: 'video/webm' };
+    // Get the media stream (e.g., from camera)
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then((stream: MediaStream) => {
+        this.stream = stream;
 
-    // Check if MediaRecorder is supported in the browser
-    if (!window.MediaRecorder) {
-      console.error("MediaRecorder is not supported in this browser.");
-      return;
-    }
+        const options = { mimeType: 'video/webm' };
+        this.mediaRecorder = new MediaRecorder(this.stream, options);
 
-    try {
-      // Create a new MediaRecorder instance
-      this.mediaRecorder = new MediaRecorder(this.stream, options);
+        // Reset recorded blobs before starting a new recording
+        this.recordedBlobs = [];
 
-      // Attach event listeners for data and stop events
-      this.mediaRecorder.ondataavailable = this.onDataAvailableEvent.bind(this);
-      this.mediaRecorder.onstop = this.onStopRecordingEvent.bind(this);
+        // Handle data available event
+        this.mediaRecorder.ondataavailable = (event: BlobEvent) => {
+          console.log('Data available event fired');
+          if (event.data.size > 0) {
+            this.recordedBlobs.push(event.data);
+          }
+        };
 
-      // Check if the MediaRecorder is in an invalid state
-      if (this.mediaRecorder.state === "inactive") {
-        // Start recording if it's in the inactive state
+        // Handle the stop event (after recording ends)
+        this.mediaRecorder.onstop = () => {
+          console.log('Recording stopped');
+          this.uploadRecording();
+        };
+
         this.mediaRecorder.start();
         this.isRecording = true;
-
-        // Log the start of the recording
-        console.log("Recording started...");
-
-        // Start frame capture and speech recognition
-        this.startFrameCapture();
-        this.startSpeechRecognition(); // Start speech recognition when recording starts
-      } else {
-        console.warn("MediaRecorder is already in use. Please stop the previous recording.");
-      }
-    } catch (err) {
-      console.error("Error initializing media recorder:", err);
-    }
+        console.log('Recording started');
+      })
+      .catch((err) => {
+        console.error('Error accessing media devices:', err);
+      });
   }
 
 
   stopRecording(): void {
-    // Ensure that mediaRecorder is in a recording or paused state before stopping it
     if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
+      console.log('Stopping recording');
       this.mediaRecorder.stop();
       this.isRecording = false;
     }
 
-    // Stop the video stream tracks if they exist
+    // Stop all media tracks to release the resources
     if (this.stream) {
       this.stream.getTracks().forEach((track) => {
         track.stop();
       });
     }
 
-    // Upload the recording if applicable
-    this.uploadRecording();
-
-    // Stop the frame capture if it exists
-    this.stopFrameCapture();
-
-    // Stop speech recognition if applicable
-    if (this.recognition) {
-      this.recognition.stop();  // Stop speech recognition when recording stops
-    }
-
-    console.log("Recording stopped, resources cleaned up.");
+    console.log('Recording stopped');
   }
 
 
@@ -217,10 +201,26 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
   }
 
   private uploadRecording(): void {
+    console.log('Recorded Blobs:', this.recordedBlobs);
+
+    // Check if recordedBlobs is empty
+    if (this.recordedBlobs.length === 0) {
+      console.error('No recorded blobs to upload.');
+      return;
+    }
+
+    // Create a unique filename for the video
     const uniqueFilename = `recording_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.webm`;
+
+    // Create a Blob from the recorded blobs
     const videoBuffer = new Blob(this.recordedBlobs, { type: 'video/webm' });
+
+    // Create a File object from the Blob
     const file = new File([videoBuffer], uniqueFilename, { type: 'video/webm' });
-  
+
+    console.log('Uploading file:', file);
+
+    // Upload the file using the videoRecordingService (ensure the service is set up to handle file uploads)
     this.videoRecordingService.uploadFile(file);
   }
 
