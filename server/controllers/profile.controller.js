@@ -1,5 +1,6 @@
 const User = require('../models/user.model.js');
 const mongoose = require('mongoose');
+const bcrypt = require("bcryptjs");
 
 exports.getProfile = async (req, res) => {
     try {
@@ -43,7 +44,7 @@ exports.getAllMentorProfiles = async (req, res) => {
 exports.updateProfile = async (req, res) => {
     try {
         const updatedData = {
-            username: req.body.username, // ✅ Allow username change
+            username: req.body.username, //Allow username change
             role: req.body.role || "User",
             bio: req.body.bio || "No bio available",
             interests: req.body.interests || "No interests listed",
@@ -65,3 +66,43 @@ exports.updateProfile = async (req, res) => {
         res.status(500).send({ message: error.message });
     }
 };
+
+exports.changePassword = async (req, res) => {
+    try {
+        console.log("🔍 Received change password request:", req.body);
+
+        const { userId, currentPassword, newPassword } = req.body;
+
+        if (!userId || !currentPassword || !newPassword) {
+            console.error("Missing required fields:", req.body);
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        
+        const user = await User.findById(userId);
+        if (!user) {
+            console.error("User not found:", userId);
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        //Check if the current password is correct
+        const passwordIsValid = bcrypt.compareSync(currentPassword, user.password);
+        if (!passwordIsValid) {
+            console.error("Invalid current password for user:", userId);
+            return res.status(401).json({ message: "Current password is incorrect." });
+        }
+
+        
+        const hashedPassword = bcrypt.hashSync(newPassword, 8); //Hash new password
+        user.password = hashedPassword;
+        await user.save(); 
+
+        console.log("Password changed successfully for user:", userId);
+        return res.status(200).json({ message: "Password changed successfully." });
+
+    } catch (err) {
+        console.error("Error in changePassword API:", err);
+        return res.status(500).json({ message: "Internal server error", error: err.message });
+    }
+};
+
