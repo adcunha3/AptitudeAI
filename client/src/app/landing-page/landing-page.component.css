@@ -1,3 +1,4 @@
+/* Global Styles */
 body {
   font-family: 'Poppins', sans-serif;
   background-color: #f8f8f8;
@@ -5,126 +6,184 @@ body {
   margin: 0;
   padding: 0;
   text-align: center;
+  line-height: 1.6;
+  overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  width: 200px;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 15px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+nav a:hover {
+  background-color: #ffdd57;
+}
+
+/* Hero Section */
 .hero-section {
   background: linear-gradient(135deg, #6a11cb, #2575fc);
   color: white;
-  padding: 80px 20px;
+  padding: 120px 20px 80px;
   border-radius: 12px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  margin-top: 80px; /* Space for fixed header */
 }
 
 .hero-section .section-title {
-  font-size: 36px;
+  font-size: 48px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  text-transform: uppercase;
 }
 
 .hero-section .highlight {
   color: #ffdd57;
+  font-style: italic;
 }
 
 .description-box {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 20px;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 30px;
+  border-radius: 12px;
   margin: 0 auto;
-  max-width: 800px;
-  font-size: 18px;
+  max-width: 900px;
+  font-size: 20px;
   font-weight: 300;
+  text-align: left;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  margin-top: 20px;
 }
 
 .cta-btn {
   background-color: #ffdd57;
   color: #333;
-  padding: 12px 24px;
-  border-radius: 6px;
+  padding: 15px 30px;
+  border-radius: 8px;
   border: none;
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 20px;
+  font-weight: 600;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 30px;
   transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .cta-btn:hover {
   background-color: #ffd700;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .section-divider {
-  width: 60px;
-  height: 4px;
+  width: 80px;
+  height: 6px;
   background-color: #ffdd57;
-  margin: 30px auto;
+  margin: 40px auto;
+  border-radius: 3px;
 }
 
+/* Team Section */
 .team-section {
-  padding: 60px 20px;
+  padding: 80px 20px;
+  background: #f1f1f1;
 }
 
 .team-section .section-title {
-  font-size: 28px;
-  margin-bottom: 30px;
+  font-size: 36px;
+  margin-bottom: 50px;
+  text-transform: uppercase;
+  color: #4b0082;
 }
 
 .team-members {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 30px;
 }
 
 .team-member {
   background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   text-align: center;
-  width: 200px;
-  transition: transform 0.3s ease;
+  width: 240px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .team-member:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
 }
 
 .team-member img {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   border: 3px solid #6200ea;
+  object-fit: cover;
 }
 
 .team-member h3 {
-  font-size: 18px;
-  margin-top: 10px;
+  font-size: 22px;
+  margin-top: 15px;
   color: #4b0082;
 }
 
 .team-member p {
-  font-size: 14px;
-  color: #666;
+  font-size: 16px;
+  color: #777;
 }
 
+/* FAQ Section */
 .faq-section {
-  padding: 60px 20px;
+  padding: 80px 20px;
   background: #fff;
   border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
 .faq-section .section-title {
-  font-size: 28px;
-  margin-bottom: 30px;
+  font-size: 36px;
+  margin-bottom: 40px;
+  color: #4b0082;
+  text-transform: uppercase;
 }
 
 .faq-item {
-  background: #f4f4f4;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  max-width: 600px;
+  background: #f9f9f9;
+  padding: 25px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  max-width: 700px;
   margin: 0 auto;
   text-align: left;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
 .faq-question {
@@ -133,7 +192,27 @@ body {
 }
 
 .faq-answer {
-  font-size: 16px;
+  font-size: 18px;
   color: #333;
-  margin-top: 5px;
+  margin-top: 10px;
+}
+
+/* Footer Section */
+footer {
+  background-color: #111;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+  margin-top: 60px;
+}
+
+footer a {
+  color: #ffdd57;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+footer a:hover {
+  color: #ffd700;
 }

@@ -1,28 +1,128 @@
 @import 'stream-chat-angular/src/assets/styles/css/index.css';
 
-html {
-  height: 100%;
-}
-
-body {
-  margin: 0;
-  height: 100%;
-}
-
+/* Chat Layout */
 #root {
-  display: flex;
-  height: 100%;
-
-  stream-channel-list{
-    width: 30%;
-  }
-
-  stream-channel {
-    width: 100%;
-  }
-
-  stream-thread {
-    width: 45%;
-  }
+  display: grid;
+  grid-template-columns: 250px 1fr 300px;
+  height: 100vh;
+  gap: 15px;
+  padding-top: 100px !important;
+  background: #f4f0ff;
 }
 
+/* Sidebar */
+.sidebar {
+  background: #7e22ce;
+  color: #fff;
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* Chat Container */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+:host {
+  display: block;
+  position: relative;
+}
+
+/* Utility Panel */
+.utility-panel {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Search Bar */
+.search-container {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+}
+
+.search-container input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.search-container button {
+  background: #9333ea;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.search-container button:hover {
+  background: #7e22ce;
+}
+
+/* Rating System */
+.review-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+}
+
+.review-container input {
+  width: 100%;
+}
+
+.review-container button {
+  background: #4caf50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.review-container button:hover {
+  background: #388e3c;
+}
+/* Start Call Button */
+.start-call-button {
+  background: #7e22ce; /* Match the sidebar background */
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 30px; /* More rounded for a sleek look */
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+}
+
+.start-call-button:hover {
+  background: #9333ea; /* Slightly darker purple for hover */
+  transform: translateY(-2px); /* Slight hover lift effect */
+}
+
+.start-call-button:active {
+  background: #7e22ce; /* Match original color on click */
+  transform: translateY(2px); /* Button press effect */
+}
+
+.start-call-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #9333ea; /* Focus state with outline for accessibility */
+}

@@ -2,54 +2,64 @@
 .form-container {
     max-width: 400px;
     margin: 50px auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
     text-align: center;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease-in-out;
 }
 
 /* Form header */
 .form-container h2 {
-    font-size: 24px;
+    font-size: 28px;
     margin-bottom: 20px;
     font-weight: bold;
     color: #333;
+    letter-spacing: 1px;
 }
 
 /* Form group styling */
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     text-align: left;
 }
 
 .form-group label {
     display: block;
     font-size: 14px;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     color: #666;
 }
 
+/* Input field styling */
 .form-group input {
     width: 100%;
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
     box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #2575fc;
+    outline: none;
 }
 
 /* Submit button styling */
 .btn-submit {
     width: 100%;
-    background-color: #007bff;
+    background-color: #2575fc;
     color: #fff;
-    padding: 10px;
-    font-size: 16px;
+    padding: 12px;
+    font-size: 18px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .btn-submit:disabled {
@@ -57,19 +67,20 @@
 }
 
 .btn-submit:hover {
-    background-color: #0056b3;
+    background-color: #6a11cb;
 }
 
 /* Login link */
 .login-link {
-    margin-top: 15px;
+    margin-top: 20px;
     font-size: 14px;
     color: #333;
 }
 
 .login-link a {
-    color: #007bff;
+    color: #2575fc;
     text-decoration: none;
+    font-weight: bold;
 }
 
 .login-link a:hover {
