@@ -1,93 +1,162 @@
 @import 'stream-chat-angular/src/assets/styles/css/index.css';
 
-/* Chat Layout */
-#root {
+/* Root Container */
+.root {
   display: grid;
-  grid-template-columns: 250px 1fr 300px;
-  height: 100vh;
+  grid-template-columns: 250px 1fr 300px; /* Sidebar, Chat Area, Utility Panel */
+  grid-template-rows: auto 1fr auto; /* Header (auto), Chat & Content (flex), Footer (auto) */
   gap: 15px;
-  padding-top: 100px !important;
-  background: #f4f0ff;
+  height: 100vh;
+  padding-top: 100px; /* Adds padding from the header */
+  background-color: #f4f4f4;
 }
 
-/* Sidebar */
+/* Sidebar - User Information */
 .sidebar {
-  background: #7e22ce;
-  color: #fff;
+  background-color: #f4f4f4;
+  color: #333;
+  padding: 20px;
   border-radius: 12px;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 100px; /* Prevents the sidebar from overlapping the header */
+  height: calc(100vh - 100px); /* Ensures the sidebar stretches to the available height */
   overflow-y: auto;
 }
 
-/* Chat Container */
+/* Chat Container - Main Area */
 .chat-container {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background: #fff;
+  background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-:host {
-  display: block;
+  overflow: hidden;
   position: relative;
+  padding: 20px;
+  height: 80vh; /* Adjust height for the chat area */
 }
 
-/* Utility Panel */
+/* Chat Content - Message Area */
+.chat-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+/* Footer - Chat Area */
+.chat-footer {
+  padding: 10px;
+  background-color: #f1f1f1;
+  border-top: 1px solid #ddd;
+  text-align: center;
+}
+
+/* Start Call Button - Bottom of Chat */
+.start-call-container {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  justify-content: center; /* Center items vertically */
+  align-items: center; /* Center items horizontally */
+  padding: 10px;
+}
+
+.video-call-container {
+  display: flex;
+  flex-direction: row; /* Aligns video calls horizontally */
+  justify-content: center; /* Centers them in the container */
+  align-items: center; /* Aligns items vertically */
+  gap: 20px; /* Adds spacing between video calls */
+  flex-wrap: wrap; /* Allows wrapping if too many participants */
+  padding: 10px;
+}
+
+.start-call-button {
+  padding: 10px;
+  padding: 12px 24px;
+  background-color: #28a745; /* Green */
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.start-call-button:hover {
+  background-color: #218838;
+  transform: translateY(-2px); /* Button hover effect */
+}
+
+.start-call-button:active {
+  background-color: #28a745;
+  transform: translateY(2px); /* Button press effect */
+}
+
+/* Utility Panel - Right Side (Search, Review) */
 .utility-panel {
-  background: #fff;
-  padding: 15px;
+  background-color: #fff;
+  padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
+  position: sticky;
+  top: 100px;
+  height: calc(100vh - 100px);
 }
 
-/* Search Bar */
+/* Search Container - for Search Input */
 .search-container {
-  display: flex;
-  gap: 10px;
-  padding: 10px;
+  margin-bottom: 20px;
 }
 
 .search-container input {
-  flex: 1;
+  width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
   border-radius: 8px;
+  max-width: 300px; /* Fixed width for input */
 }
 
 .search-container button {
-  background: #9333ea;
+  background-color: #9333ea;
   color: white;
   padding: 10px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background 0.3s;
 }
 
 .search-container button:hover {
-  background: #7e22ce;
+  background-color: #7e22ce;
 }
 
-/* Rating System */
+/* Review Section */
 .review-container {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  text-align: center;
 }
 
 .review-container input {
   width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  max-width: 300px; /* Fixed width for input */
 }
 
 .review-container button {
-  background: #4caf50;
+  background-color: #4caf50;
   color: white;
   padding: 10px;
   border: none;
@@ -96,33 +165,18 @@
 }
 
 .review-container button:hover {
-  background: #388e3c;
-}
-/* Start Call Button */
-.start-call-button {
-  background: #7e22ce; /* Match the sidebar background */
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 30px; /* More rounded for a sleek look */
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+  background-color: #388e3c;
 }
 
-.start-call-button:hover {
-  background: #9333ea; /* Slightly darker purple for hover */
-  transform: translateY(-2px); /* Slight hover lift effect */
+/* App Call Section (video call) */
+app-call {
+  padding: 30px;
+  min-width: 300px;
+  max-width: 1000px;
+  height: 300px;
+  z-index: 10;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.start-call-button:active {
-  background: #7e22ce; /* Match original color on click */
-  transform: translateY(2px); /* Button press effect */
-}
-
-.start-call-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px #9333ea; /* Focus state with outline for accessibility */
-}
