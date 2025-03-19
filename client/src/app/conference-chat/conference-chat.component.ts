@@ -163,12 +163,8 @@ export class ConferenceChatComponent implements OnInit, AfterViewChecked {
       userId: otherUser.user_id,
       reviewerId: localStorage.getItem('userId'),
       rating: this.rating
-<<<<<<< HEAD
-  };
-=======
     };
-
->>>>>>> eca30d685a1d5b745cbca3527001b1422cfc7972
+    
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
