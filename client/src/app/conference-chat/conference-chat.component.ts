@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, AfterViewChecked, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { AuthService } from '../../services/auth-service';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
-
 import {
   ChatClientService,
   ChannelService,
@@ -19,20 +18,29 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 @Component({
   selector: 'app-conference-chat',
   standalone: true,
-  imports: [TranslateModule, StreamAutocompleteTextareaModule, StreamChatModule, CommonModule, CallComponent, FormsModule],
+  imports: [
+    TranslateModule,
+    StreamAutocompleteTextareaModule,
+    StreamChatModule,
+    CommonModule,
+    CallComponent,
+    FormsModule
+  ],
   templateUrl: './conference-chat.component.html',
-  styleUrl: './conference-chat.component.css',
+  styleUrls: ['./conference-chat.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class ConferenceChatComponent implements OnInit {
-  rating: number = 5;
-  searchUserId: string = '';
-  searchedUser: { id: string; username: string } | null = null;
-  addedParticipants: { id: string; username: string }[] = [];
+export class ConferenceChatComponent implements OnInit, AfterViewChecked {
+  @ViewChild('chatContent') private chatContent: ElementRef | undefined;
+
+  public rating: number = 5;
+  public searchUserId: string = '';
+  public searchedUser: { id: string; username: string } | null = null;
+  public addedParticipants: { id: string; username: string }[] = [];
 
   constructor(
-    private chatService: ChatClientService,
-    private channelService: ChannelService,
+    public chatService: ChatClientService,
+    public channelService: ChannelService,
     private streamI18nService: StreamI18nService,
     private authService: AuthService,
     public videoCallService: VideoCallService,
@@ -43,13 +51,16 @@ export class ConferenceChatComponent implements OnInit {
     const userToken = this.authService.getChatToken();
 
     if (userId && userToken) {
-      this.chatService.init(apiKey, userId, userToken)
+      this.chatService
+        .init(apiKey, userId, userToken)
         .then(() => {
           this.streamI18nService.setTranslation();
         })
-        .catch(err => console.error("Error connecting user to Stream Chat:", err));
+        .catch((err) =>
+          console.error('Error connecting user to Stream Chat:', err)
+        );
     } else {
-      console.error("Missing user ID or token");
+      console.error('Missing user ID or token');
     }
   }
 
@@ -61,8 +72,8 @@ export class ConferenceChatComponent implements OnInit {
   
       await this.channelService.init(
         { type: "messaging", members: { $in: [userId] } },
-        { name: 1 }, 
-        { limit: 30 } 
+        { name: 1 },
+        { limit: 30 }
       );
   
       this.channelService.channels$.subscribe((channels) => {
@@ -74,7 +85,6 @@ export class ConferenceChatComponent implements OnInit {
       });
   
       await this.loadMoreChannels();
-  
     } catch (error) {
       console.error('Error initializing channels:', error);
     }
@@ -136,8 +146,8 @@ export class ConferenceChatComponent implements OnInit {
     const activeChannel = this.channelService.activeChannel;
 
     if (!activeChannel) {
-        alert("No active chat detected.");
-        return;
+      alert('No active chat detected.');
+      return;
     }
 
     // Find the other user in the chat
@@ -145,30 +155,37 @@ export class ConferenceChatComponent implements OnInit {
     const otherUser = members.find(member => member.user_id !== this.authService.getUserId());
 
     if (!otherUser) {
-        alert("Could not determine the user you are chatting with.");
-        return;
+      alert('Could not determine the user you are chatting with.');
+      return;
     }
 
     const payload = {
       userId: otherUser.user_id,
       reviewerId: localStorage.getItem('userId'),
       rating: this.rating
-  };
+    };
+
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
 
     this.http.post('http://localhost:3000/api/leaderboard', payload, { headers })
-        .subscribe(
-            () => alert("Review submitted successfully!"),
-            (error) => console.error("Error submitting review:", error)
-        );
-}
+      .subscribe(
+        () => alert("Review submitted successfully!"),
+        (error) => console.error("Error submitting review:", error)
+      );
+  }
 
   startCall() {
     const channelId = this.channelService.activeChannel?.id;
     this.videoCallService.setCallId(channelId);
+  }
+
+  ngAfterViewChecked() {
+    if (this.chatContent) {
+      this.chatContent.nativeElement.scrollTop = this.chatContent.nativeElement.scrollHeight;
+    }
   }
 }
