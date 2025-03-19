@@ -220,4 +220,63 @@ button:hover {
   border-color: #007bff;
   background-color: #fff;
   box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+
+}
+
+/* Container Styling */
+.response-container {
+  display: flex;
+  flex-direction: row; /* Stack buttons vertically */
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  min-width: 200px;
+  max-width: 400px;
+  height: 50px;
+  background: #f8f6ff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  padding: 20px;
+}
+
+/* General Button Styling */
+.response-container .btn {
+  width: 90%; /* Make buttons responsive inside container */
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+/* Submit Button */
+.response-container .btn-success {
+  background: #28a745; /* Green */
+  color: white;
+}
+
+.response-container .btn-success:hover {
+  background: #218838;
+  transform: scale(1.05);
+}
+
+/* Recording Button */
+.response-container .btn-primary {
+  background: #007bff; /* Blue */
+  color: white;
+}
+
+.response-container .btn-primary:hover {
+  background: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Larger Button */
+.response-container .btn-lg {
+  font-size: 14px;
+  padding: 12px;
 }

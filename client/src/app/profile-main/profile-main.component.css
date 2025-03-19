@@ -6,13 +6,14 @@
   width: 100%;
   max-width: 900px;
   margin: auto;
+  padding-top: 100px;
   background: white;
   padding-bottom: 50px;
 }
 
 
 .cover-photo {
-  width: 100%;
+  width: 10000px;
   height: 180px;
   background: linear-gradient(135deg, #6a11cb, #2575fc);
   display: flex;

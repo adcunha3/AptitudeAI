@@ -79,6 +79,9 @@
 
         <div class="response-container">
           <button class="btn btn-success" (click)="submitResponse()">Submit Response</button>
+          <button class="btn btn-primary btn-lg" (click)="toggleRecording()">
+            {{ isRecording ? 'Stop Recording' : 'Start Recording' }}
+          </button>
         </div>
         <div class="ai-feedback">
           <h4>Feedback</h4>
@@ -92,10 +95,4 @@
   </div>
 </div>
 
-<!-- Unified Recording Button -->
-<div class="recording-button-container">
-  <button class="btn btn-primary btn-lg" (click)="toggleRecording()">
-    {{ isRecording ? 'Stop Recording' : 'Start Recording' }}
-  </button>
-</div>
 </div>

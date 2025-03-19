@@ -78,7 +78,7 @@
 .start-call-button {
   padding: 10px;
   padding: 12px 24px;
-  background-color: #28a745; /* Green */
+  background-color: #7e22ce;
   color: white;
   border: none;
   border-radius: 30px;
@@ -90,7 +90,7 @@
 }
 
 .start-call-button:hover {
-  background-color: #218838;
+  background-color: #560a97;
   transform: translateY(-2px); /* Button hover effect */
 }
 
