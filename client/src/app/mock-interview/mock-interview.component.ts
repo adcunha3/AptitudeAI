@@ -72,20 +72,49 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
   /** Submits user response to AI backend for evaluation */
   submitResponse() {
 
+
+    const studentId = localStorage.getItem("userId");
+
+    console.log("🟢 Retrieved User ID from Local Storage:", studentId, typeof studentId);
+    if (!studentId) {
+      console.error("❌ No student ID found. User might not be logged in.");
+      alert("Error: You must be logged in to submit a response.");
+      return;
+  }
+
+
     if (!this.spokenText.trim()) {
       console.error("No spoken text to submit.");
       return;
     }
 
+    const currentQuestion = this.question;
+
     this.http.post<{ analysis: string, example_response: string, follow_up: string }>("http://localhost:8080/evaluate-response", { response: this.spokenText })
       .subscribe({
         next: (res) => { this.aiFeedback = res.analysis; this.exampleResponse = res.example_response; this.question = res.follow_up;
+          
 
+          const currentResponse = this.spokenText; 
           this.spokenText = "";
+
+          this.uploadFeedback(studentId!, currentQuestion, currentResponse, res.analysis, res.example_response);
          },
         error: (err) => { console.error("Error fetching feedback:", err); }
       });
   }
+
+  uploadFeedback(studentId: string, questionText: string, response: string, feedback: string, exampleResponse: string) {
+    this.http.post<{ message: string }>(
+      "http://localhost:3000/api/feedback/evaluate-response", // ✅ Save directly to DB
+      { user_id: studentId, questionText, response, feedback, example_response: exampleResponse }
+    ).subscribe({
+        next: (res) => {
+            console.log("✅ Feedback saved to MongoDB:", res.message);
+        },
+        error: (err) => console.error("❌ Error saving feedback:", err)
+    });
+}
   /** Handles user text input */
   handleResponseInput(event: any) {
     this.userResponse = event.target.value;
@@ -148,6 +177,8 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
         this.mediaRecorder.start();
         this.isRecording = true;
         console.log('Recording started');
+
+      this.startFrameCapture();  // ✅ Start real-time computer vision updates
       })
       .catch((err) => {
         console.error('Error accessing media devices:', err);
@@ -202,27 +233,58 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
 
   private uploadRecording(): void {
     console.log('Recorded Blobs:', this.recordedBlobs);
-
+  
     // Check if recordedBlobs is empty
     if (this.recordedBlobs.length === 0) {
       console.error('No recorded blobs to upload.');
       return;
     }
-
+  
     // Create a unique filename for the video
     const uniqueFilename = `recording_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.webm`;
-
+  
     // Create a Blob from the recorded blobs
     const videoBuffer = new Blob(this.recordedBlobs, { type: 'video/webm' });
-
+  
     // Create a File object from the Blob
     const file = new File([videoBuffer], uniqueFilename, { type: 'video/webm' });
-
+  
     console.log('Uploading file:', file);
-
+  
     // Upload the file using the videoRecordingService (ensure the service is set up to handle file uploads)
-    this.videoRecordingService.uploadFile(file);
+    this.videoRecordingService.uploadFile(file).subscribe({
+      next: (res) => {
+        console.log('File upload success:', res);
+      },
+      error: (err) => {
+        console.error('File upload error:', err);
+      }
+    });
   }
+
+  // private uploadRecording(): void {
+  //   console.log('Recorded Blobs:', this.recordedBlobs);
+
+  //   // Check if recordedBlobs is empty
+  //   if (this.recordedBlobs.length === 0) {
+  //     console.error('No recorded blobs to upload.');
+  //     return;
+  //   }
+
+  //   // Create a unique filename for the video
+  //   const uniqueFilename = `recording_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.webm`;
+
+  //   // Create a Blob from the recorded blobs
+  //   const videoBuffer = new Blob(this.recordedBlobs, { type: 'video/webm' });
+
+  //   // Create a File object from the Blob
+  //   const file = new File([videoBuffer], uniqueFilename, { type: 'video/webm' });
+
+  //   console.log('Uploading file:', file);
+
+  //   // Upload the file using the videoRecordingService (ensure the service is set up to handle file uploads)
+  //   this.videoRecordingService.uploadFile(file);
+  // }
 
   private onDataAvailableEvent(event: BlobEvent): void {
     this.recordedBlobs.push(event.data);

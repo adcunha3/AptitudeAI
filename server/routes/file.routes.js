@@ -37,6 +37,11 @@ router.post("/upload", upload.single("file"), async (req, res) => {
         return res.status(400).json({ message: "No file uploaded" });
     }
 
+    const { userId } = req.body;
+    if (!userId) {
+        return res.status(400).json({ message: "User ID is required" });
+    }
+
     try {
         const readableStream = new Readable();
         readableStream.push(req.file.buffer);
@@ -44,6 +49,9 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
         const uploadStream = gridfsBucket.openUploadStream(req.file.originalname, {
             contentType: req.file.mimetype,
+            metadata: {
+                userId: userId,
+            },
         });
 
         readableStream.pipe(uploadStream);
@@ -86,11 +94,13 @@ router.get("/file/:filename", async (req, res) => {
 router.get("/file/:filename/view", async (req, res) => {
     try {
         const file = await gfs.files.findOne({ filename: req.params.filename });
+        console.log(file); // Check if file is found
         if (!file) {
             return res.status(404).json({ message: "File not found" });
         }
 
         const readStream = gridfsBucket.openDownloadStream(file._id);
+        console.log(readStream);
 
         readStream.on("error", (err) => {
             console.error("Read stream error:", err.message);
@@ -100,6 +110,30 @@ router.get("/file/:filename/view", async (req, res) => {
         readStream.pipe(res);
     } catch (err) {
         console.error("Error streaming file:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.get("/file/:id/videos", async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const files = await gfs.files.find({ "metadata.userId": userId }).toArray();
+
+        if (files.length === 0) {
+            return res.status(404).json({ message: "No videos found for this user." });
+        }
+
+        const videoFiles = files.map(file => ({
+            _id: file._id,
+            filename: file.filename,
+            contentType: file.contentType,
+            uploadDate: file.uploadDate,
+        }));
+
+        res.status(200).json(videoFiles);
+    } catch (err) {
+        console.error("Error fetching videos:", err.message);
         res.status(500).json({ error: err.message });
     }
 });
