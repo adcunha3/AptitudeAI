@@ -233,27 +233,58 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
 
   private uploadRecording(): void {
     console.log('Recorded Blobs:', this.recordedBlobs);
-
+  
     // Check if recordedBlobs is empty
     if (this.recordedBlobs.length === 0) {
       console.error('No recorded blobs to upload.');
       return;
     }
-
+  
     // Create a unique filename for the video
     const uniqueFilename = `recording_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.webm`;
-
+  
     // Create a Blob from the recorded blobs
     const videoBuffer = new Blob(this.recordedBlobs, { type: 'video/webm' });
-
+  
     // Create a File object from the Blob
     const file = new File([videoBuffer], uniqueFilename, { type: 'video/webm' });
-
+  
     console.log('Uploading file:', file);
-
+  
     // Upload the file using the videoRecordingService (ensure the service is set up to handle file uploads)
-    this.videoRecordingService.uploadFile(file);
+    this.videoRecordingService.uploadFile(file).subscribe({
+      next: (res) => {
+        console.log('File upload success:', res);
+      },
+      error: (err) => {
+        console.error('File upload error:', err);
+      }
+    });
   }
+
+  // private uploadRecording(): void {
+  //   console.log('Recorded Blobs:', this.recordedBlobs);
+
+  //   // Check if recordedBlobs is empty
+  //   if (this.recordedBlobs.length === 0) {
+  //     console.error('No recorded blobs to upload.');
+  //     return;
+  //   }
+
+  //   // Create a unique filename for the video
+  //   const uniqueFilename = `recording_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.webm`;
+
+  //   // Create a Blob from the recorded blobs
+  //   const videoBuffer = new Blob(this.recordedBlobs, { type: 'video/webm' });
+
+  //   // Create a File object from the Blob
+  //   const file = new File([videoBuffer], uniqueFilename, { type: 'video/webm' });
+
+  //   console.log('Uploading file:', file);
+
+  //   // Upload the file using the videoRecordingService (ensure the service is set up to handle file uploads)
+  //   this.videoRecordingService.uploadFile(file);
+  // }
 
   private onDataAvailableEvent(event: BlobEvent): void {
     this.recordedBlobs.push(event.data);
