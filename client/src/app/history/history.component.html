@@ -1,0 +1,12 @@
+<div *ngIf="videos.length > 0; else noVideos">
+    <h2>Your Uploaded Videos</h2>
+    <div *ngFor="let video of videos" class="video-container">
+      <h3>{{ video.filename }}</h3>
+      <!-- Display video instead of download link -->
+      <video [src]="video.streamUrl" controls class="video-player"></video>
+    </div>
+  </div>
+  
+  <ng-template #noVideos>
+    <p>No videos available.</p>
+  </ng-template>
