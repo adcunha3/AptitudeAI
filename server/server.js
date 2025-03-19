@@ -5,6 +5,7 @@ const cors = require('cors');
 const cookieSession = require('cookie-session');
 const fs = require('fs');
 const { connectDB } = require('./config/db.config.js');
+const feedbackRoutes = require("./routes/feedback.routes.js");
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.get("/", (req, res) => {
 // Routes
 require("./routes/auth.routes.js")(app);
 app.use("/api/files", require("./routes/file.routes")); // File upload routes
+app.use("/api/feedback", feedbackRoutes);
 
 
 app.listen(3000, () => { console.log('App running on port 3000'); });

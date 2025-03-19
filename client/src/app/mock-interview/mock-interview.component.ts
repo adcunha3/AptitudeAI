@@ -72,20 +72,49 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
   /** Submits user response to AI backend for evaluation */
   submitResponse() {
 
+
+    const studentId = localStorage.getItem("userId");
+
+    console.log("🟢 Retrieved User ID from Local Storage:", studentId, typeof studentId);
+    if (!studentId) {
+      console.error("❌ No student ID found. User might not be logged in.");
+      alert("Error: You must be logged in to submit a response.");
+      return;
+  }
+
+
     if (!this.spokenText.trim()) {
       console.error("No spoken text to submit.");
       return;
     }
 
+    const currentQuestion = this.question;
+
     this.http.post<{ analysis: string, example_response: string, follow_up: string }>("http://localhost:8080/evaluate-response", { response: this.spokenText })
       .subscribe({
         next: (res) => { this.aiFeedback = res.analysis; this.exampleResponse = res.example_response; this.question = res.follow_up;
+          
 
+          const currentResponse = this.spokenText; 
           this.spokenText = "";
+
+          this.uploadFeedback(studentId!, currentQuestion, currentResponse, res.analysis, res.example_response);
          },
         error: (err) => { console.error("Error fetching feedback:", err); }
       });
   }
+
+  uploadFeedback(studentId: string, questionText: string, response: string, feedback: string, exampleResponse: string) {
+    this.http.post<{ message: string }>(
+      "http://localhost:3000/api/feedback/evaluate-response", // ✅ Save directly to DB
+      { user_id: studentId, questionText, response, feedback, example_response: exampleResponse }
+    ).subscribe({
+        next: (res) => {
+            console.log("✅ Feedback saved to MongoDB:", res.message);
+        },
+        error: (err) => console.error("❌ Error saving feedback:", err)
+    });
+}
   /** Handles user text input */
   handleResponseInput(event: any) {
     this.userResponse = event.target.value;
