@@ -74,5 +74,21 @@ export class ProfileService {
   
     return this.http.post(`http://localhost:3000/api/profile/${userId}/upload`, formData, { headers });
   }
+
+  changePassword(currentPassword: string, newPassword: string) {
+    const userId = this.authService.getLocalStorageData()?.userId; 
+    const token = this.getToken(); 
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.post('http://localhost:3000/api/auth/change-password',
+      {
+        userId,
+        currentPassword,
+        newPassword
+      },
+      { headers } 
+    );
+}
+
   
 }

@@ -26,4 +26,6 @@ module.exports = function(app) {
     // Leaderboard Routes
     app.get("/api/leaderboard", [verifyToken.checkToken], leaderboardController.getScore);
     app.post("/api/leaderboard", [verifyToken.checkToken], leaderboardController.updateScore);
+
+    app.post("/api/auth/change-password", [verifyToken.checkToken], profileController.changePassword);
 }

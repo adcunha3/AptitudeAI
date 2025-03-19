@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ProfileService } from '../../services/profile-service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-profile',
@@ -15,11 +16,13 @@ export class ProfileComponent implements OnInit {
   profileForm!: FormGroup;
   selectedFile: File | null = null;
   previewUrl: string = '';
+  passwordForm!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     public profileService: ProfileService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService, 
   ) {}
 
   ngOnInit() {
@@ -31,6 +34,21 @@ export class ProfileComponent implements OnInit {
       bio: [this.profileService.bio()],
       profileImage: ['']
     });
+
+        
+        this.passwordForm = this.fb.group({
+          currentPassword: ['', [Validators.required]],
+          newPassword: ['', [Validators.required, Validators.minLength(6)]],
+          confirmPassword: ['', [Validators.required]]
+        });
+    
+        
+        this.passwordForm.valueChanges.subscribe(values => {
+          if (values.newPassword !== values.confirmPassword) {
+            this.passwordForm.controls['confirmPassword'].setErrors({ mismatch: true });
+          }
+        });
+    
   
     this.profileForm.valueChanges.subscribe(() => {
       this.profileForm.markAsDirty();
@@ -76,6 +94,32 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
+
+  onChangePassword() {
+    if (this.passwordForm.invalid) {
+      alert("Please fill in all fields correctly.");
+      return;
+    }
+  
+    if (this.passwordForm.value.newPassword !== this.passwordForm.value.confirmPassword) {
+      alert("New passwords do not match.");
+      return;
+    }
+  
+    this.profileService.changePassword(
+      this.passwordForm.value.currentPassword,
+      this.passwordForm.value.newPassword
+    ).subscribe({
+      next: () => alert("Password changed successfully!"),
+      error: (err) => {
+        console.error("Backend error response:", err);
+        alert("Error changing password: " + (err.error?.message || "Unknown error"));
+      }
+    });
+  
+    this.passwordForm.reset(); // Clear form after successful submission
+  }
+
   
   
 }
