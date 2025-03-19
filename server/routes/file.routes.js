@@ -138,4 +138,25 @@ router.get("/file/:id/videos", async (req, res) => {
     }
 });
 
+// Delete video route
+router.delete("/file/:filename", async (req, res) => {
+    try {
+        const filename = req.params.filename;
+
+        // Find file by filename
+        const file = await gfs.files.findOne({ filename });
+        if (!file) {
+            return res.status(404).json({ message: "File not found" });
+        }
+
+        // Delete the file using ObjectId
+        await gridfsBucket.delete(file._id);
+
+        res.status(200).json({ message: "File deleted successfully" });
+    } catch (err) {
+        console.error("Error deleting file:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+  
 module.exports = router;

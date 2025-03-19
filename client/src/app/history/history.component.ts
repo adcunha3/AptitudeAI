@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class HistoryComponent implements OnInit {
   videos: any[] = [];
-  feedbacks: any[] = []; 
+  feedbacks: any[] = [];
 
   constructor(private historyService: HistoryService, private http: HttpClient) {}
 
@@ -23,12 +23,9 @@ export class HistoryComponent implements OnInit {
       return;
     }
 
-
-
     this.historyService.getUserVideos(userId).subscribe({
       next: (response) => {
         if (response && response.length > 0) {
-          // Add the streaming URL for each video
           this.videos = response.map((video: any) => ({
             ...video,
             streamUrl: `http://localhost:3000/api/files/file/${video.filename}/view`
@@ -45,10 +42,22 @@ export class HistoryComponent implements OnInit {
     this.http.get<any[]>(`http://localhost:3000/api/feedback/feedback-history/${userId}`).subscribe({
       next: (res) => {
         this.feedbacks = res;
-        console.log("🟢 Loaded Feedback History:", this.feedbacks);
       },
       error: (err) => console.error("❌ Error fetching feedback history:", err)
     });
   }
 
+  deleteVideo(videoId: string): void {
+    this.historyService.deleteVideo(videoId).subscribe(
+      () => {
+        console.log('Video deleted successfully');
+        window.location.reload(); // Reloads the full page
+      },
+      (error) => {
+        console.error('Error deleting video:', error);
+      }
+    );
+  }  
+
+  
 }
