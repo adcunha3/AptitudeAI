@@ -1,5 +1,5 @@
 const express = require("express");
-const { saveFeedback, getFeedbackHistory } = require("../controllers/feedback.controller");
+const { saveFeedback, getFeedbackByUser } = require("../controllers/feedback.controller");
 
 const router = express.Router();
 
@@ -7,6 +7,6 @@ const router = express.Router();
 router.post("/evaluate-response", saveFeedback);
 
 // ✅ Get Feedback History
-router.get("/feedback-history/:user_id", getFeedbackHistory);
+router.get("/feedback-history/:user_id", getFeedbackByUser);
 
 module.exports = router;

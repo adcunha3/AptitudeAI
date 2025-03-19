@@ -177,6 +177,8 @@ export class MockInterviewComponent implements OnInit, AfterViewInit {
         this.mediaRecorder.start();
         this.isRecording = true;
         console.log('Recording started');
+
+      this.startFrameCapture();  // ✅ Start real-time computer vision updates
       })
       .catch((err) => {
         console.error('Error accessing media devices:', err);
