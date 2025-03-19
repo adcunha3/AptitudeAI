@@ -27,17 +27,21 @@ body {
 }
 
 /* Participants Grid */
+/* Participants - Change from Grid to Flexbox */
 .participants {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 15px;
-  flex-grow: 1;
+  display: flex; /* Change from grid to flex */
+  flex-direction: row; /* Align participants in a row */
+  justify-content: center; /* Centers videos horizontally */
+  align-items: center; /* Aligns videos vertically */
+  gap: 15px; /* Space between videos */
+  flex-wrap: nowrap; /* Allows wrapping if too many participants */
   overflow-y: auto;
   padding: 15px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.2);
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+
 
 /* Call Controls */
 .call-controls {
