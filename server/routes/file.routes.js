@@ -34,7 +34,7 @@ const upload = multer({
         return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const userId = req.body.userId;
+    const { userId } = req.body;
     if (!userId) {
         return res.status(400).json({ message: "User ID is required" });
     }
@@ -46,7 +46,9 @@ const upload = multer({
 
         const uploadStream = gridfsBucket.openUploadStream(req.file.originalname, {
             contentType: req.file.mimetype,
-            metadata: { userId }
+            metadata: {
+                userId: userId,
+            },
         });
 
         readableStream.pipe(uploadStream);
@@ -87,10 +89,8 @@ router.get("/file/:filename", async (req, res) => {
 // Stream file route
 router.get("/file/:filename/view", async (req, res) => {
     try {
-        // Check if the file exists
-        const fileCursor = gfs.files.find({ filename: req.params.filename });
-        const file = await fileCursor.next();
-
+        const file = await gfs.files.findOne({ filename: req.params.filename });
+        console.log(file); // Check if file is found
         if (!file) {
             console.error("File not found:", req.params.filename);
             return res.status(404).json({ message: "File not found" });
@@ -101,6 +101,7 @@ router.get("/file/:filename/view", async (req, res) => {
         res.setHeader("Content-Type", "video/webm"); // Set MIME type
 
         const readStream = gridfsBucket.openDownloadStream(file._id);
+        console.log(readStream);
 
         readStream.on("error", (err) => {
             console.error("Read stream error:", err.message);
@@ -122,49 +123,26 @@ router.get("/file/:filename/view", async (req, res) => {
     }
 });
 
-router.get("/file/:userId/videos", async (req, res) => {
+router.get("/file/:id/videos", async (req, res) => {
+    const userId = req.params.id;
+
     try {
-        const userId = req.params.userId;
+        const files = await gfs.files.find({ "metadata.userId": userId }).toArray();
 
-        if (!mongoose.connection.db) {
-            return res.status(500).json({ message: "Database not connected" });
+        if (files.length === 0) {
+            return res.status(404).json({ message: "No videos found for this user." });
         }
 
-        const filesCollection = mongoose.connection.db.collection("uploads.files");
-        const files = await filesCollection.find({ "metadata.userId": userId }).toArray();
-
-        if (!files || files.length === 0) {
-            return res.status(404).json({ message: "No videos found for this user" });
-        }
-
-        const videos = files.map(file => ({
+        const videoFiles = files.map(file => ({
             _id: file._id,
             filename: file.filename,
-            url: `http://localhost:3000/api/files/file/${file.filename}/view`
+            contentType: file.contentType,
+            uploadDate: file.uploadDate,
         }));
 
-        res.status(200).json(videos);
+        res.status(200).json(videoFiles);
     } catch (err) {
-        console.error("Error fetching user videos:", err.message);
-        res.status(500).json({ error: err.message });
-    }
-});
-
-router.get("/file/:filename/download", async (req, res) => {
-    try {
-        const fileCursor = gfs.files.find({ filename: req.params.filename });
-        const file = await fileCursor.next();
-
-        if (!file) {
-            return res.status(404).json({ message: "File not found" });
-        }
-
-        res.setHeader("Content-Type", "video/webm");
-        res.setHeader("Content-Disposition", `attachment; filename="${file.filename}"`);
-
-        const readStream = gridfsBucket.openDownloadStream(file._id);
-        readStream.pipe(res);
-    } catch (err) {
+        console.error("Error fetching videos:", err.message);
         res.status(500).json({ error: err.message });
     }
 });

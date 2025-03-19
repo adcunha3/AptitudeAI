@@ -15,32 +15,22 @@ export class VideoRecordingService {
 
     constructor(private http: HttpClient, private router: Router) { }
 
-    uploadFile(file: File): void {
-        const userId = localStorage.getItem('userId');
-      
-        if (!userId) {
-          console.error('User ID not found in localStorage');
-          return;
-        }
-      
-        const formData: FormData = new FormData();
-        formData.append('file', file, file.name);
-        formData.append('userId', userId);
-      
-        // Log the file and formData for debugging purposes
-        console.log('Uploading file with form data:', formData);
-      
-        this.http.post('http://localhost:3000/api/files/upload', formData).subscribe({
-          next: (res) => {
-            console.log('Upload successful:', res);
-            // You can add additional logic here to show a success message or navigate away.
-          },
-          error: (err) => {
-            console.error('Upload failed:', err);
-            // You can add logic to show an error message to the user.
-          },
-        });
+    uploadFile(file: File): Observable<any> {
+      const userId = localStorage.getItem('userId');
+    
+      if (!userId) {
+        console.error('User ID not found in localStorage');
+        return new Observable();
       }
+    
+      const formData: FormData = new FormData();
+      formData.append('file', file, file.name);
+      formData.append('userId', userId);
+    
+      console.log('Uploading file with form data:', formData);
+    
+      return this.http.post<any>('http://localhost:3000/api/files/upload', formData);
+    }
 
     // Upload base64 image and process frame for analysis
     uploadBase64Image(frameData: string): Observable<FrameProcessingResponse> {

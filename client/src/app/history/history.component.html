@@ -1,12 +1,49 @@
-<div *ngIf="videos.length > 0; else noVideos">
+<!-- <div *ngIf="videos.length > 0; else noVideos">
     <h2>Your Uploaded Videos</h2>
     <div *ngFor="let video of videos" class="video-container">
       <h3>{{ video.filename }}</h3>
-      <!-- Display video instead of download link -->
+      <!-- Display video instead of download link 
       <video [src]="video.streamUrl" controls class="video-player"></video>
     </div>
-  </div>
+  </div> -->
   
-  <ng-template #noVideos>
+  <!-- <ng-template #noVideos>
     <p>No videos available.</p>
-  </ng-template>
+  </ng-template> -->
+
+  <div class="history-container">
+    <h2>Your Mock Interview History</h2>
+  
+    <!-- ✅ Video History -->
+    <div *ngIf="videos.length > 0; else noVideos">
+      <h3>Recorded Interviews</h3>
+      <div *ngFor="let video of videos" class="video-container">
+        <h4>{{ video.filename }}</h4>
+        <video [src]="video.streamUrl" controls class="video-player"></video>
+        <p class="timestamp">Uploaded on: {{ video.uploadedAt | date:'medium' }}</p>
+      </div>
+    </div>
+  
+    <!-- ❌ No Videos Available -->
+    <ng-template #noVideos>
+      <p>No recorded interviews found.</p>
+    </ng-template>
+  
+  
+    <hr />
+  
+    <!-- ✅ Display Feedback -->
+    <div class="feedback-history">
+      <h3>Feedback History</h3>
+      <div *ngIf="feedbacks.length === 0">
+        <p>No feedback available yet. Complete a mock interview to see your history.</p>
+      </div>
+      <div *ngFor="let feedback of feedbacks" class="feedback-card">
+        <h4>Question: {{ feedback.questions[0]?.questionText }}</h4>
+        <p><strong>Your Response:</strong> {{ feedback.questions[0]?.response }}</p>
+        <p><strong>Feedback:</strong> {{ feedback.questions[0]?.feedback }}</p>
+        <p><strong>Example Response:</strong> {{ feedback.questions[0]?.example_response }}</p>
+        <p class="timestamp">Date: {{ feedback.createdAt | date:'medium' }}</p>
+      </div>
+    </div>
+  </div>
