@@ -31,15 +31,19 @@ const UserSchema = mongoose.Schema({
         type: String,
          default: "/assets/default-profile.png"
     },
-    userScore: {
-        type: [Number],
-        validate: {
-            validator: function(arr) {
-                return arr.every((rating) => rating >= 1 && rating <= 10);
-            },
-            message: 'Ratings should be between 1 and 10.'
+    userScore: [{
+        score: {
+            type: Number,
+            required: true,
+            min: 1,
+            max: 10
+        },
+        givenBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true
         }
-    }
+    }]
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", UserSchema);
