@@ -23,20 +23,20 @@ exports.getAllMentorProfiles = async (req, res) => {
         }
 
         const mentorsWithAvgScores = mentors.map(mentor => {
-            const scores = mentor.userScore.map(entry => entry.score); // Extract only the score values
+            const scores = mentor.userScore.map(entry => entry.score);
 
             const averageScore = scores.length > 0 
                 ? (scores.reduce((acc, score) => acc + score, 0) / scores.length).toFixed(2)
-                : null; // If no scores exist, keep it null
+                : null;
 
             return {
                 ...mentor.toObject(),
-                averageScore: averageScore !== null ? parseFloat(averageScore) : null, // Ensure correct formatting
-                studentsHelped: scores.length // Count of students helped
+                averageScore: averageScore !== null ? parseFloat(averageScore) : null,
+                studentsHelped: scores.length
             };
         });
 
-        mentorsWithAvgScores.sort((a, b) => (b.averageScore || 0) - (a.averageScore || 0)); // Handle null values
+        mentorsWithAvgScores.sort((a, b) => (b.averageScore || 0) - (a.averageScore || 0));
 
         res.send(mentorsWithAvgScores);
     } catch (error) {
@@ -47,7 +47,7 @@ exports.getAllMentorProfiles = async (req, res) => {
 exports.updateProfile = async (req, res) => {
     try {
         const updatedData = {
-            username: req.body.username, //Allow username change
+            username: req.body.username,
             role: req.body.role || "User",
             bio: req.body.bio || "No bio available",
             interests: req.body.interests || "No interests listed",
@@ -109,3 +109,14 @@ exports.changePassword = async (req, res) => {
     }
 };
 
+exports.getProfileByUsername = async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.params.username }).select('-password');
+        if (!user) {
+            return res.status(404).send({ message: "User not found" });
+        }
+        res.send(user);
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};

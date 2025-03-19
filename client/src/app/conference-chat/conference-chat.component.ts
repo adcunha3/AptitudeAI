@@ -93,7 +93,7 @@ export class ConferenceChatComponent implements OnInit {
 
   searchUser() {
     const token = this.authService.getToken();
-    this.http.get<any>(`http://localhost:3000/api/profile/${this.searchUserId}`, {
+    this.http.get<any>(`http://localhost:3000/api/profile/username/${this.searchUserId}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
