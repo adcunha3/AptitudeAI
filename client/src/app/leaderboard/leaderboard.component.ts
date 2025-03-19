@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './leaderboard.component.css'
 })
 export class LeaderboardComponent implements OnInit {
-  leaderboard: { rank: number, username: string, averageScore: number }[] = [];
+  leaderboard: { rank: number, username: string, averageScore: number, studentsHelped: number }[] = [];
 
   constructor(private http: HttpClient) {}
 
@@ -32,7 +32,8 @@ export class LeaderboardComponent implements OnInit {
         this.leaderboard = users.map((user, index) => ({
           rank: index + 1,
           username: user.username,
-          averageScore: user.averageScore
+          averageScore: user.averageScore,
+          studentsHelped: user.studentsHelped 
         }));
       }, (error) => {
         console.error('Error fetching leaderboard:', error);

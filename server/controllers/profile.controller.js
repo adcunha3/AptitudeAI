@@ -23,17 +23,20 @@ exports.getAllMentorProfiles = async (req, res) => {
         }
 
         const mentorsWithAvgScores = mentors.map(mentor => {
-            const averageScore = mentor.userScore.length > 0 
-                ? (mentor.userScore.reduce((acc, score) => acc + score, 0) / mentor.userScore.length).toFixed(2)
-                : 0;
+            const scores = mentor.userScore.map(entry => entry.score); // Extract only the score values
+
+            const averageScore = scores.length > 0 
+                ? (scores.reduce((acc, score) => acc + score, 0) / scores.length).toFixed(2)
+                : null; // If no scores exist, keep it null
 
             return {
                 ...mentor.toObject(),
-                averageScore: parseFloat(averageScore)
+                averageScore: averageScore !== null ? parseFloat(averageScore) : null, // Ensure correct formatting
+                studentsHelped: scores.length // Count of students helped
             };
         });
 
-        mentorsWithAvgScores.sort((a, b) => b.averageScore - a.averageScore);
+        mentorsWithAvgScores.sort((a, b) => (b.averageScore || 0) - (a.averageScore || 0)); // Handle null values
 
         res.send(mentorsWithAvgScores);
     } catch (error) {

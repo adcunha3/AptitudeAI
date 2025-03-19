@@ -150,9 +150,10 @@ export class ConferenceChatComponent implements OnInit {
     }
 
     const payload = {
-        userId: otherUser.user_id,
-        rating: this.rating
-    };
+      userId: otherUser.user_id,
+      reviewerId: localStorage.getItem('userId'),
+      rating: this.rating
+  };
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
         'Authorization': `Bearer ${token}`,
