@@ -22,6 +22,7 @@ module.exports = function(app) {
     app.get("/api/profile/:id", [verifyToken.checkToken], profileController.getProfile);
     app.get("/api/profiles", [verifyToken.checkToken], profileController.getAllMentorProfiles); 
     app.put("/api/profile/:id", [verifyToken.checkToken], profileController.updateProfile); 
+    app.get("/api/profile/username/:username", [verifyToken.checkToken], profileController.getProfileByUsername); 
 
     // Leaderboard Routes
     app.get("/api/leaderboard", [verifyToken.checkToken], leaderboardController.getScore);

@@ -23,17 +23,20 @@ exports.getAllMentorProfiles = async (req, res) => {
         }
 
         const mentorsWithAvgScores = mentors.map(mentor => {
-            const averageScore = mentor.userScore.length > 0 
-                ? (mentor.userScore.reduce((acc, score) => acc + score, 0) / mentor.userScore.length).toFixed(2)
-                : 0;
+            const scores = mentor.userScore.map(entry => entry.score);
+
+            const averageScore = scores.length > 0 
+                ? (scores.reduce((acc, score) => acc + score, 0) / scores.length).toFixed(2)
+                : null;
 
             return {
                 ...mentor.toObject(),
-                averageScore: parseFloat(averageScore)
+                averageScore: averageScore !== null ? parseFloat(averageScore) : null,
+                studentsHelped: scores.length
             };
         });
 
-        mentorsWithAvgScores.sort((a, b) => b.averageScore - a.averageScore);
+        mentorsWithAvgScores.sort((a, b) => (b.averageScore || 0) - (a.averageScore || 0));
 
         res.send(mentorsWithAvgScores);
     } catch (error) {
@@ -44,7 +47,7 @@ exports.getAllMentorProfiles = async (req, res) => {
 exports.updateProfile = async (req, res) => {
     try {
         const updatedData = {
-            username: req.body.username, //Allow username change
+            username: req.body.username,
             role: req.body.role || "User",
             bio: req.body.bio || "No bio available",
             interests: req.body.interests || "No interests listed",
@@ -106,3 +109,14 @@ exports.changePassword = async (req, res) => {
     }
 };
 
+exports.getProfileByUsername = async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.params.username }).select('-password');
+        if (!user) {
+            return res.status(404).send({ message: "User not found" });
+        }
+        res.send(user);
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};

@@ -1,9 +1,10 @@
 const User = require('../models/user.model.js');
+const mongoose = require('mongoose');
 
 exports.getScore = async (req, res) => {
     const { userId } = req.body;
     try {
-        const user = await User.findById(userId);
+        const user = await User.findById({ _id: userId });
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -25,7 +26,17 @@ exports.getScore = async (req, res) => {
 };
 
 exports.updateScore = async (req, res) => {
-    const { userId, rating } = req.body;
+    const { userId, reviewerId, rating } = req.body;
+
+    console.log(userId);
+    console.log(reviewerId);
+    console.log(rating);
+
+
+    if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(reviewerId)) {
+        return res.status(400).json({ message: 'Invalid user ID(s).' });
+    }
+
     if (typeof rating !== 'number' || rating < 1 || rating > 10) {
         return res.status(400).json({ message: 'Rating must be a number between 1 and 10.' });
     }
@@ -37,16 +48,19 @@ exports.updateScore = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        if (!user.userScore) {
-            user.userScore = [];
+        const existingReviewIndex = user.userScore.findIndex(review => review.givenBy.toString() === reviewerId);
+
+        if (existingReviewIndex !== -1) {
+            user.userScore[existingReviewIndex].score = rating;
+        } else {
+            user.userScore.push({ score: rating, givenBy: reviewerId });
         }
 
-        user.userScore.push(rating); 
         await user.save();
 
         res.status(200).json({
-            message: 'Review added successfully',
-            userScore: user.userScore,  
+            message: 'Review added/updated successfully',
+            userScore: user.userScore,
         });
 
     } catch (error) {

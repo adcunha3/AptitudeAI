@@ -45,7 +45,7 @@ export class AuthService {
   loginUser(username: string, password: string) {
     const loginData = { username, password };
     this.http
-      .post<{ token: string; expiresIn: number; userId: string; chatToken: string }>(
+      .post<{ token: string; expiresIn: number; userId: string; chatToken: string, username: string }>(
         'http://localhost:3000/api/auth/signin',
         loginData,
         { headers: { 'Content-Type': 'application/json' } }
@@ -58,7 +58,7 @@ export class AuthService {
             this.logoutTimer = setTimeout(() => this.logout(), res.expiresIn * 1000);
             const now = new Date();
             const expiresDate = new Date(now.getTime() + res.expiresIn * 1000);
-            this.storeLoginDetails(res.token, expiresDate, res.userId, res.chatToken);
+            this.storeLoginDetails(res.token, expiresDate, res.userId, res.chatToken, res.username);
           } else {
             console.error('Token is missing or invalid');
           }
@@ -90,11 +90,12 @@ export class AuthService {
       });
   }
 
-  storeLoginDetails(token: string, expirationDate: Date, userId: string, chatToken: string) {
+  storeLoginDetails(token: string, expirationDate: Date, userId: string, chatToken: string, username: string) {
     localStorage.setItem('token', token);
     localStorage.setItem('expiresIn', expirationDate.toISOString());
     localStorage.setItem('userId', userId);
     localStorage.setItem('chatToken', chatToken);
+    localStorage.setItem('username', username);
   }
 
   clearLoginDetails() {
@@ -102,6 +103,10 @@ export class AuthService {
     localStorage.removeItem('expiresIn');
     localStorage.removeItem('userId');
     localStorage.removeItem('chatToken');
+    localStorage.removeItem('username');
+    localStorage.removeItem('activeChannelId');
+    localStorage.removeItem('activeChannelIds');
+    localStorage.removeItem('channelIds');
   }
 
     getLocalStorageData(){

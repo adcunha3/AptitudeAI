@@ -6,7 +6,6 @@ const { Readable } = require("stream");
 
 const router = express.Router();
 
-// Initialize GridFS
 let gfs, gridfsBucket;
 
 mongoose.connection.once("open", () => {
@@ -18,7 +17,6 @@ mongoose.connection.once("open", () => {
     console.log("GridFS initialized.");
 });
 
-// Configure Multer to handle file uploads in memory
 const storage = multer.memoryStorage();
 const upload = multer({
     storage: storage,
@@ -31,8 +29,7 @@ const upload = multer({
     },
   });
 
-// Upload file route
-router.post("/upload", upload.single("file"), async (req, res) => {
+  router.post("/upload", upload.single("file"), async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
     }
@@ -81,7 +78,6 @@ router.get("/file/:filename", async (req, res) => {
         if (!file) {
             return res.status(404).json({ message: "File not found" });
         }
-
         console.log("File metadata:", file);
         res.status(200).json(file);
     } catch (err) {
@@ -96,8 +92,13 @@ router.get("/file/:filename/view", async (req, res) => {
         const file = await gfs.files.findOne({ filename: req.params.filename });
         console.log(file); // Check if file is found
         if (!file) {
+            console.error("File not found:", req.params.filename);
             return res.status(404).json({ message: "File not found" });
         }
+
+        console.log("Streaming file:", file.filename);
+
+        res.setHeader("Content-Type", "video/webm"); // Set MIME type
 
         const readStream = gridfsBucket.openDownloadStream(file._id);
         console.log(readStream);
@@ -105,6 +106,14 @@ router.get("/file/:filename/view", async (req, res) => {
         readStream.on("error", (err) => {
             console.error("Read stream error:", err.message);
             res.status(500).json({ error: err.message });
+        });
+
+        readStream.on("data", (chunk) => {
+            console.log("Streaming chunk:", chunk.length, "bytes");
+        });
+
+        readStream.on("end", () => {
+            console.log("Stream complete.");
         });
 
         readStream.pipe(res);

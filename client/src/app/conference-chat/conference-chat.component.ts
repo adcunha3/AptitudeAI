@@ -39,11 +39,11 @@ export class ConferenceChatComponent implements OnInit, AfterViewChecked {
   public addedParticipants: { id: string; username: string }[] = [];
 
   constructor(
-    public chatService: ChatClientService,  // Made public
-    public channelService: ChannelService,  // Made public
+    public chatService: ChatClientService,
+    public channelService: ChannelService,
     private streamI18nService: StreamI18nService,
     private authService: AuthService,
-    public videoCallService: VideoCallService, // Made public
+    public videoCallService: VideoCallService,
     private http: HttpClient
   ) {
     const apiKey = environment.STREAM_API_KEY;
@@ -103,7 +103,7 @@ export class ConferenceChatComponent implements OnInit, AfterViewChecked {
 
   searchUser() {
     const token = this.authService.getToken();
-    this.http.get<any>(`http://localhost:3000/api/profile/${this.searchUserId}`, {
+    this.http.get<any>(`http://localhost:3000/api/profile/username/${this.searchUserId}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -161,8 +161,10 @@ export class ConferenceChatComponent implements OnInit, AfterViewChecked {
 
     const payload = {
       userId: otherUser.user_id,
+      reviewerId: localStorage.getItem('userId'),
       rating: this.rating
     };
+    
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
